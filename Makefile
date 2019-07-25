@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := build
 
 BINARY = pkims
-VERSION = v0.0.0
+VERSION = 0.0.0
 
 GO_VERSION = $(shell go version | awk -F\go '{print $$3}' | awk '{print $$1}')
 COMMIT = $(shell git rev-parse HEAD)

@@ -12,6 +12,7 @@ var rootCommand = &cobra.Command{
 	Short: "Provides a web UI for managing certificates",
 }
 
+// Execute runs the command parser
 func Execute() {
 	if err := rootCommand.Execute(); err != nil {
 		fmt.Println(err)

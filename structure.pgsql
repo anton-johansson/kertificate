@@ -1,5 +1,4 @@
 drop table "User";
-
 create table "User"
 (
     "userId"    serial primary key  not null
@@ -7,12 +6,18 @@ create table "User"
 ,   "active"    boolean             not null    default true
 );
 
-insert into "User"("username", "password")
-values('anton', 'test');
+insert into "User"("username")
+values('anton');
 
 select  *
 from    "User";
 
+
+update	"User" as "user"
+set		"active" = true
+where	lower("user"."username") = lower('anton');
+
+delete from "User";
 
 create type "KeySize" as enum
 (
