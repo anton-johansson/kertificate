@@ -15,9 +15,9 @@ func Run() {
 	}
 
 	userDAO := db.NewUserDAO(database)
-	authenticationService := auth.NewAuthService(userDAO)
-	apiServer := api.NewApiServer()
-	v1.InitializeV1(apiServer.V1, authenticationService)
+	authService := auth.NewAuthService(userDAO)
+	apiServer := api.NewApiServer(authService)
+	v1.InitializeV1(apiServer.V1, authService)
 	if err := apiServer.Start(); err != nil {
 		panic(err)
 	}

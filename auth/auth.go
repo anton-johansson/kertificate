@@ -18,14 +18,13 @@ type authResult struct {
 type AuthService struct {
 	userDAO  *db.UserDAO
 	delegate authDelegate
+	key      []byte
 }
 
 func NewAuthService(userDAO *db.UserDAO) *AuthService {
 	delegate := &dummy{}
-	return &AuthService{
-		userDAO,
-		delegate,
-	}
+	key := []byte("f4b92153521a438795eb853454242bba")
+	return &AuthService{userDAO, delegate, key}
 }
 
 // Login attempts to log a user in. It returns either a login token back, or an error
@@ -37,5 +36,19 @@ func (service *AuthService) Login(username string, password string) (string, err
 	}
 	userId := service.userDAO.GetOrCreateId(result.username)
 	fmt.Println("Got userId", userId)
-	return "s3cr3t-t0k3n", nil
+	token, err := generateToken(userId, service.key)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return token, err
+}
+
+// CheckToken checks an existing token by validating it and refreshing it if necessary
+func (service *AuthService) CheckToken(token string) (int64, error) {
+	userId, err := decryptToken(token, service.key)
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+	return userId, nil
 }
