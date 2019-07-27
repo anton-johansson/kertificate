@@ -7,23 +7,23 @@ import (
 	echo "github.com/labstack/echo/v4"
 )
 
-type AuthenticationAPI struct {
+type AuthAPI struct {
 	POST func(echo.Context) error
 }
 
-type authenticationRequest struct {
+type authRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-func NewAuthenticationAPI(authenticationService *auth.AuthService) *AuthenticationAPI {
-	return &AuthenticationAPI{
+func NewAuthAPI(authService *auth.AuthService) *AuthAPI {
+	return &AuthAPI{
 		POST: func(context echo.Context) error {
-			data := authenticationRequest{}
+			data := authRequest{}
 			if err := context.Bind(&data); err != nil {
 				return err
 			}
-			token, err := authenticationService.Login(data.Username, data.Password)
+			token, err := authService.Login(data.Username, data.Password)
 			if err != nil {
 				context.JSON(http.StatusBadRequest, err)
 				return nil
