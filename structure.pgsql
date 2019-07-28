@@ -31,9 +31,9 @@ create type "Digest" as enum
     'SHA-1'
 );
 
-create table "CertificateProfile"
+create table "CertificateTemplate"
 (
-    "profileId"             serial primary key  not null
+    "templateId"            serial primary key  not null
 ,   "name"                  varchar(30)         not null
 ,   "countryCode"           varchar(100)        not null
 ,   "state"                 varchar(100)        not null
@@ -46,7 +46,7 @@ create table "CertificateProfile"
 ,   "digest"                "Digest"            not null
 );
 
-insert into "CertificateProfile"
+insert into "CertificateTemplate"
 (
     "name"
 ,   "countryCode"
@@ -74,7 +74,7 @@ values
 );
 
 select  *
-from    "CertificateProfile";
+from    "CertificateTemplate";
 
 drop table if exists "PrivateKey";
 create table "PrivateKey"
@@ -128,3 +128,6 @@ create table "Certificate"
 );
 
 update "User" set "active" = true where "userId" = 4;
+select * from "ConsumerType";
+select * from "User";
+delete from "User" where "userId" = 7;

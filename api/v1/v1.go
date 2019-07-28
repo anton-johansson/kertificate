@@ -8,7 +8,11 @@ import (
 )
 
 // InitializeV1 initializes version 1 of the API
-func InitializeV1(group *echo.Group, authService *auth.AuthService, consumerTypeAPI *ConsumerTypeAPI) {
+func InitializeV1(
+	group *echo.Group,
+	authService *auth.AuthService,
+	consumerTypeAPI *ConsumerTypeAPI,
+	certificateTemplateAPI *CertificateTemplateAPI) {
 	authMiddleware := common.NewAuthenticationMiddleware(authService, "/v1/authenticate", "/v1/status", "/v1/version")
 	versionAPI := NewVersionAPI()
 	statusAPI := NewStatusAPI()
@@ -20,9 +24,18 @@ func InitializeV1(group *echo.Group, authService *auth.AuthService, consumerType
 	group.GET("/status", statusAPI.GET)
 	group.POST("/authenticate", authAPI.POST)
 	group.GET("/test", testAPI)
+
+	// ConsumerType
 	group.POST("/consumer-types", consumerTypeAPI.Create)
 	group.GET("/consumer-types", consumerTypeAPI.List)
 	group.GET("/consumer-types/:typeId", consumerTypeAPI.Get)
 	group.PUT("/consumer-types/:typeId", consumerTypeAPI.Update)
 	group.DELETE("/consumer-types/:typeId", consumerTypeAPI.Delete)
+
+	// CertificateTemplate
+	group.POST("/certificate-templates", certificateTemplateAPI.Create)
+	group.GET("/certificate-templates", certificateTemplateAPI.List)
+	group.GET("/certificate-templates/:templateId", certificateTemplateAPI.Get)
+	group.PUT("/certificate-templates/:templateId", certificateTemplateAPI.Update)
+	group.DELETE("/certificate-templates/:templateId", certificateTemplateAPI.Delete)
 }
