@@ -84,7 +84,9 @@ func (api *CertificateTemplateAPI) Create(context echo.Context) error {
 	if err != nil {
 		return err
 	}
-	context.Response().Header().Add("Location", "/v1/certificate-template/"+strconv.Itoa(templateId))
+
+	location := context.Request().RequestURI + "/" + strconv.Itoa(templateId)
+	context.Response().Header().Add("Location", location)
 	context.Response().WriteHeader(http.StatusOK)
 	return nil
 }
