@@ -2,6 +2,7 @@ package v1
 
 import (
 	"net/http"
+	"pkims/api/common"
 	"pkims/auth"
 
 	echo "github.com/labstack/echo/v4"
@@ -28,7 +29,9 @@ func NewAuthAPI(authService *auth.AuthService) *AuthAPI {
 				context.JSON(http.StatusBadRequest, err)
 				return nil
 			}
-			return context.JSON(http.StatusOK, token)
+			common.SendNewToken(context, token)
+			context.Response().WriteHeader(http.StatusOK)
+			return nil
 		},
 	}
 }

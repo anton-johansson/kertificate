@@ -44,11 +44,26 @@ func (service *AuthService) Login(username string, password string) (string, err
 }
 
 // CheckToken checks an existing token by validating it and refreshing it if necessary
-func (service *AuthService) CheckToken(token string) (int64, error) {
-	userId, err := decryptToken(token, service.key)
+func (service *AuthService) CheckToken(token string) (int64, string, error) {
+	userId, expired, err := decryptToken(token, service.key)
 	if err != nil {
-		fmt.Println(err)
-		return 0, err
+		fmt.Println("Error when decrypting token:", err)
+		return 0, "", err
 	}
-	return userId, nil
+	if !expired {
+		return userId, "", nil
+	}
+
+	fmt.Println("Token needs a refresh")
+	if !service.userDAO.IsActive(userId) {
+		fmt.Println("User was no longer active")
+		return 0, "", errors.New("User is no longer active")
+	}
+
+	newToken, err := generateToken(userId, service.key)
+	if err != nil {
+		fmt.Println("Error when refreshing token:", err)
+		return 0, "", err
+	}
+	return userId, newToken, nil
 }

@@ -32,7 +32,7 @@ func (middleware *AuthenticationMiddleware) Process(next echo.HandlerFunc) echo.
 		}
 
 		token := context.Request().Header.Get("Authorization")
-		userId, err := middleware.authService.CheckToken(token)
+		userId, newToken, err := middleware.authService.CheckToken(token)
 		if err != nil {
 			fmt.Println("auth mdlwr: denied")
 			context.Error(err)
@@ -40,6 +40,14 @@ func (middleware *AuthenticationMiddleware) Process(next echo.HandlerFunc) echo.
 		}
 		context.Set("userId", userId)
 		fmt.Println("auth mdlwr: got user", userId)
+		if len(newToken) > 0 {
+			fmt.Println("Refreshed token")
+			SendNewToken(context, newToken)
+		}
 		return next(context)
 	}
+}
+
+func SendNewToken(context echo.Context, token string) {
+	context.Response().Header().Add("X-Set-Authorization", token)
 }

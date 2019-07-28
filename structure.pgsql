@@ -126,3 +126,5 @@ create table "Certificate"
 ,   "publicKey"     int                 references "PublicKey"("keyId")
 ,   "createdBy"     int                 references "User"("userId")
 );
+
+update "User" set "active" = true where "userId" = 4;

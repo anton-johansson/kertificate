@@ -13,7 +13,8 @@ where	lower("user"."username") = lower($1);
 
 const createUserAndGetId = `
 insert into "User" ("username")
-values ($1);
+values ($1)
+returning "userId";
 `
 
 const deactivateUserIfExists = `
@@ -21,6 +22,12 @@ update	"User" as "user"
 set		"active" = false
 where	lower("user"."username") = lower($1)
 and		"user"."active" = true;
+`
+
+const isActive = `
+select	"active"
+from	"User" "user"
+where	"user"."userId" = $1
 `
 
 type UserDAO struct {
@@ -44,14 +51,8 @@ func (dao *UserDAO) GetOrCreateId(username string) int64 {
 		return -1
 	}
 
-	result, err := dao.database.db.Exec(createUserAndGetId, username)
-	if err != nil {
+	if err := dao.database.db.QueryRow(createUserAndGetId, username).Scan(&userId); err != nil {
 		fmt.Println("error creating user:", err)
-		return -1
-	}
-	userId, err = result.LastInsertId()
-	if err != nil {
-		fmt.Println("error getting last insert ID")
 		return -1
 	}
 	return userId
@@ -62,4 +63,17 @@ func (dao *UserDAO) DeactivateIfExists(username string) {
 	if err != nil {
 		fmt.Println("error deactivating:", err)
 	}
+}
+
+// IsActive checks if a user is active
+func (dao *UserDAO) IsActive(userId int64) bool {
+	row := dao.database.db.QueryRow(isActive, userId)
+	var active bool
+	err := row.Scan(&active)
+	if err == nil {
+		return active
+	} else if err != sql.ErrNoRows {
+		fmt.Println("Error checking active status:", err)
+	}
+	return false
 }

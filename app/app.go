@@ -15,9 +15,14 @@ func Run() {
 	}
 
 	userDAO := db.NewUserDAO(database)
+	consumerTypeDAO := db.NewConsumerTypeDAO(database)
+
 	authService := auth.NewAuthService(userDAO)
+
+	consumerTypeAPI := v1.NewConsumerTypeAPI(consumerTypeDAO)
+
 	apiServer := api.NewApiServer(authService)
-	v1.InitializeV1(apiServer.V1, authService)
+	v1.InitializeV1(apiServer.V1, authService, consumerTypeAPI)
 	if err := apiServer.Start(); err != nil {
 		panic(err)
 	}
