@@ -24,3 +24,22 @@
 * Connect certificates to clients/consumer
 * Autorenew certificates
   - send these to consumers, etc
+
+
+
+## User interace
+
+* Certificates
+  - Common authorities
+  - Server certificates
+  - Client certificates
+* Consumers
+* Base data
+  - Certificate templates
+  - Consumer types
+* Admin
+  - Users
+  - Configuration (read-only?)
+
+
+Also, a little avatar for logged in user profile + log-out link
