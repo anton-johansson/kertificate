@@ -2,6 +2,7 @@
 
 BINARY = pkims
 VERSION = 0.0.0
+DOCKER_REGISTRY = antonjohansson
 
 GO_VERSION = $(shell go version | awk -F\go '{print $$3}' | awk '{print $$1}')
 COMMIT = $(shell git rev-parse HEAD)
@@ -35,6 +36,10 @@ windows: install
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-windows-amd64.exe .
 
 build: linux darwin windows
+
+docker:
+	docker build -t ${DOCKER_REGISTRY}/${BINARY}:${VERSION} .
+	docker tag ${DOCKER_REGISTRY}/${BINARY}:${VERSION} ${DOCKER_REGISTRY}/${BINARY}:latest
 
 clean:
 	rm -rf ${OUTPUT_DIRECTORY}
