@@ -18,7 +18,7 @@ func init() {
 			if short {
 				fmt.Println(info.Version)
 			} else {
-				fmt.Println(info.Version + " (go version: " + info.GoVersion + ", commit: " + info.Commit + ")")
+				fmt.Println(info.Version + " (go version: " + info.GoVersion + ", commit: " + info.Commit + "), built at " + info.BuildDateHumanReadable())
 			}
 		},
 	}

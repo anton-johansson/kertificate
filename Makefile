@@ -6,12 +6,14 @@ DOCKER_REGISTRY = antonjohansson
 
 GO_VERSION = $(shell go version | awk -F\go '{print $$3}' | awk '{print $$1}')
 COMMIT = $(shell git rev-parse HEAD)
+BUILD_DATE = $(shell date --utc +'%Y-%m-%dT%H:%M:%SZ')
 PACKAGE_LIST = $$(go list ./...)
 OUTPUT_DIRECTORY = ./build
 LDFLAGS = -ldflags "\
-	-X pkims/version.version=${VERSION} \
-	-X pkims/version.goVersion=${GO_VERSION} \
-	-X pkims/version.commit=${COMMIT} \
+	-X ${BINARY}/version.version=${VERSION} \
+	-X ${BINARY}/version.goVersion=${GO_VERSION} \
+	-X ${BINARY}/version.commit=${COMMIT} \
+	-X ${BINARY}/version.buildDate=${BUILD_DATE} \
 	"
 
 install:
