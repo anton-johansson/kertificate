@@ -17,7 +17,41 @@ func NewConsumerTypeAPI(consumerTypeDAO *db.ConsumerTypeDAO) *ConsumerTypeAPI {
 	return &ConsumerTypeAPI{consumerTypeDAO}
 }
 
-func (api *ConsumerTypeAPI) Get(context echo.Context) error {
+func (api *ConsumerTypeAPI) Register(group *echo.Group) {
+	group.GET("", api.listConsumerTypes)
+	group.POST("", api.createConsumerType)
+	group.GET("/:typeId", api.getConsumerType)
+	group.PUT("/:typeId", api.updateConsumerType)
+	group.DELETE("/:typeId", api.deleteConsumerType)
+}
+
+func (api *ConsumerTypeAPI) listConsumerTypes(context echo.Context) error {
+	consumerTypes, err := api.consumerTypeDAO.List()
+	if err != nil {
+		return err
+	}
+	context.JSON(http.StatusOK, consumerTypes)
+	return nil
+}
+
+func (api *ConsumerTypeAPI) createConsumerType(context echo.Context) error {
+	var data db.ConsumerTypeData
+	if err := context.Bind(&data); err != nil {
+		return err
+	}
+
+	typeId, err := api.consumerTypeDAO.Create(data)
+	if err != nil {
+		return err
+	}
+
+	location := context.Request().RequestURI + "/" + strconv.Itoa(typeId)
+	context.Response().Header().Add("Location", location)
+	context.Response().WriteHeader(http.StatusOK)
+	return nil
+}
+
+func (api *ConsumerTypeAPI) getConsumerType(context echo.Context) error {
 	typeId, err := strconv.Atoi(context.Param("typeId"))
 	if err != nil {
 		fmt.Println("Could not parse typeId:", err)
@@ -32,16 +66,7 @@ func (api *ConsumerTypeAPI) Get(context echo.Context) error {
 	return nil
 }
 
-func (api *ConsumerTypeAPI) List(context echo.Context) error {
-	consumerTypes, err := api.consumerTypeDAO.List()
-	if err != nil {
-		return err
-	}
-	context.JSON(http.StatusOK, consumerTypes)
-	return nil
-}
-
-func (api *ConsumerTypeAPI) Update(context echo.Context) error {
+func (api *ConsumerTypeAPI) updateConsumerType(context echo.Context) error {
 	typeId, err := strconv.Atoi(context.Param("typeId"))
 	if err != nil {
 		fmt.Println("Could not parse typeId:", err)
@@ -60,7 +85,7 @@ func (api *ConsumerTypeAPI) Update(context echo.Context) error {
 	return nil
 }
 
-func (api *ConsumerTypeAPI) Delete(context echo.Context) error {
+func (api *ConsumerTypeAPI) deleteConsumerType(context echo.Context) error {
 	typeId, err := strconv.Atoi(context.Param("typeId"))
 	if err != nil {
 		fmt.Println("Could not parse typeId:", err)
@@ -70,23 +95,6 @@ func (api *ConsumerTypeAPI) Delete(context echo.Context) error {
 	if err := api.consumerTypeDAO.Delete(typeId); err != nil {
 		return err
 	}
-	context.Response().WriteHeader(http.StatusOK)
-	return nil
-}
-
-func (api *ConsumerTypeAPI) Create(context echo.Context) error {
-	var data db.ConsumerTypeData
-	if err := context.Bind(&data); err != nil {
-		return err
-	}
-
-	typeId, err := api.consumerTypeDAO.Create(data)
-	if err != nil {
-		return err
-	}
-
-	location := context.Request().RequestURI + "/" + strconv.Itoa(typeId)
-	context.Response().Header().Add("Location", location)
 	context.Response().WriteHeader(http.StatusOK)
 	return nil
 }

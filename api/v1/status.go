@@ -7,13 +7,16 @@ import (
 )
 
 type StatusAPI struct {
-	GET func(echo.Context) error
 }
 
 func NewStatusAPI() *StatusAPI {
-	return &StatusAPI{
-		GET: func(context echo.Context) error {
-			return context.String(http.StatusInternalServerError, "")
-		},
-	}
+	return &StatusAPI{}
+}
+
+func (api *StatusAPI) Register(group *echo.Group) {
+	group.GET("", getStatus)
+}
+
+func getStatus(context echo.Context) error {
+	return context.String(http.StatusInternalServerError, "")
 }

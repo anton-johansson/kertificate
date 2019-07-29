@@ -8,13 +8,16 @@ import (
 )
 
 type VersionAPI struct {
-	GET func(echo.Context) error
 }
 
 func NewVersionAPI() *VersionAPI {
-	return &VersionAPI{
-		GET: func(context echo.Context) error {
-			return context.JSON(http.StatusOK, version.Info())
-		},
-	}
+	return &VersionAPI{}
+}
+
+func (api *VersionAPI) Register(group *echo.Group) {
+	group.GET("", getVersion)
+}
+
+func getVersion(context echo.Context) error {
+	return context.JSON(http.StatusOK, version.Info())
 }

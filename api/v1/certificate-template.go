@@ -17,7 +17,41 @@ func NewCertificateTemplateAPI(certificateTemplateDAO *db.CertificateTemplateDAO
 	return &CertificateTemplateAPI{certificateTemplateDAO}
 }
 
-func (api *CertificateTemplateAPI) Get(context echo.Context) error {
+func (api *CertificateTemplateAPI) Register(group *echo.Group) {
+	group.GET("", api.listCertificateTypes)
+	group.POST("", api.createCertificateType)
+	group.GET("/:templateId", api.getCertificateType)
+	group.PUT("/:templateId", api.updateCertificateType)
+	group.DELETE("/:templateId", api.deleteCertificateType)
+}
+
+func (api *CertificateTemplateAPI) listCertificateTypes(context echo.Context) error {
+	certificateTemplates, err := api.certificateTemplateDAO.List()
+	if err != nil {
+		return err
+	}
+	context.JSON(http.StatusOK, certificateTemplates)
+	return nil
+}
+
+func (api *CertificateTemplateAPI) createCertificateType(context echo.Context) error {
+	var data db.CertificateTemplateData
+	if err := context.Bind(&data); err != nil {
+		return err
+	}
+
+	templateId, err := api.certificateTemplateDAO.Create(data)
+	if err != nil {
+		return err
+	}
+
+	location := context.Request().RequestURI + "/" + strconv.Itoa(templateId)
+	context.Response().Header().Add("Location", location)
+	context.Response().WriteHeader(http.StatusOK)
+	return nil
+}
+
+func (api *CertificateTemplateAPI) getCertificateType(context echo.Context) error {
 	templateId, err := strconv.Atoi(context.Param("templateId"))
 	if err != nil {
 		fmt.Println("Could not parse templateId:", err)
@@ -32,16 +66,7 @@ func (api *CertificateTemplateAPI) Get(context echo.Context) error {
 	return nil
 }
 
-func (api *CertificateTemplateAPI) List(context echo.Context) error {
-	certificateTemplates, err := api.certificateTemplateDAO.List()
-	if err != nil {
-		return err
-	}
-	context.JSON(http.StatusOK, certificateTemplates)
-	return nil
-}
-
-func (api *CertificateTemplateAPI) Update(context echo.Context) error {
+func (api *CertificateTemplateAPI) updateCertificateType(context echo.Context) error {
 	templateId, err := strconv.Atoi(context.Param("templateId"))
 	if err != nil {
 		fmt.Println("Could not parse templateId:", err)
@@ -60,7 +85,7 @@ func (api *CertificateTemplateAPI) Update(context echo.Context) error {
 	return nil
 }
 
-func (api *CertificateTemplateAPI) Delete(context echo.Context) error {
+func (api *CertificateTemplateAPI) deleteCertificateType(context echo.Context) error {
 	templateId, err := strconv.Atoi(context.Param("templateId"))
 	if err != nil {
 		fmt.Println("Could not parse templateId:", err)
@@ -70,23 +95,6 @@ func (api *CertificateTemplateAPI) Delete(context echo.Context) error {
 	if err := api.certificateTemplateDAO.Delete(templateId); err != nil {
 		return err
 	}
-	context.Response().WriteHeader(http.StatusOK)
-	return nil
-}
-
-func (api *CertificateTemplateAPI) Create(context echo.Context) error {
-	var data db.CertificateTemplateData
-	if err := context.Bind(&data); err != nil {
-		return err
-	}
-
-	templateId, err := api.certificateTemplateDAO.Create(data)
-	if err != nil {
-		return err
-	}
-
-	location := context.Request().RequestURI + "/" + strconv.Itoa(templateId)
-	context.Response().Header().Add("Location", location)
 	context.Response().WriteHeader(http.StatusOK)
 	return nil
 }
