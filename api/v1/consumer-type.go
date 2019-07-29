@@ -45,9 +45,8 @@ func (api *ConsumerTypeAPI) createConsumerType(context echo.Context) error {
 		return err
 	}
 
-	location := context.Request().RequestURI + "/" + strconv.Itoa(typeId)
-	context.Response().Header().Add("Location", location)
-	context.Response().WriteHeader(http.StatusOK)
+	context.Response().Header().Add("Location", location(context, typeId))
+	context.Response().WriteHeader(http.StatusCreated)
 	return nil
 }
 

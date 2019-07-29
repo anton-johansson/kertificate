@@ -93,12 +93,13 @@ create table "PublicKey"
 drop table if exists "CommonAuthority";
 create table "CommonAuthority"
 (
-    "authorityId"   serial primary key  not null
-,   "name"          varchar(30)         not null
-,   "privateKeyId"  int                 references "PrivateKey"("keyId")
-,   "publicKeyId"   int                 references "PublicKey"("keyId")
-,   "createdBy"     int                 references "User"("userId")
+    "commonAuthorityId"     serial primary key  not null
+,   "name"                  varchar(30)         not null
+,   "privateKeyData"        bytea               not null
+,   "certificateData"       bytea               not null
+,   "createdBy"             int                 not null    references "User"("userId")
 );
+select * from "CommonAuthority";
 
 drop table if exists "ConsumerType";
 create table "ConsumerType"

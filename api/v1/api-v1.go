@@ -8,15 +8,23 @@ import (
 type ApiV1 struct {
 	authAPI                *AuthAPI
 	certificateTemplateAPI *CertificateTemplateAPI
+	commonAuthorityAPI     *CommonAuthorityAPI
 	consumerTypeAPI        *ConsumerTypeAPI
 	statusAPI              *StatusAPI
 	versionAPI             *VersionAPI
 }
 
-func NewApiV1(authAPI *AuthAPI, certificateTemplateAPI *CertificateTemplateAPI, consumerTypeAPI *ConsumerTypeAPI, statusAPI *StatusAPI, versionAPI *VersionAPI) *ApiV1 {
+func NewApiV1(
+	authAPI *AuthAPI,
+	certificateTemplateAPI *CertificateTemplateAPI,
+	commonAuthorityAPI *CommonAuthorityAPI,
+	consumerTypeAPI *ConsumerTypeAPI,
+	statusAPI *StatusAPI,
+	versionAPI *VersionAPI) *ApiV1 {
 	return &ApiV1{
 		authAPI,
 		certificateTemplateAPI,
+		commonAuthorityAPI,
 		consumerTypeAPI,
 		statusAPI,
 		versionAPI,
@@ -27,6 +35,7 @@ func NewApiV1(authAPI *AuthAPI, certificateTemplateAPI *CertificateTemplateAPI, 
 func (api *ApiV1) Register(group *echo.Group) {
 	api.authAPI.Register(group.Group("/authentication"))
 	api.certificateTemplateAPI.Register(group.Group("/certificate-templates"))
+	api.commonAuthorityAPI.Register(group.Group("/common-authorities"))
 	api.consumerTypeAPI.Register(group.Group("/consumer-types"))
 	api.statusAPI.Register(group.Group("/status"))
 	api.versionAPI.Register(group.Group("/version"))

@@ -68,7 +68,7 @@ func (api *AuthAPI) checkRequest(next echo.HandlerFunc) echo.HandlerFunc {
 			context.Error(err)
 			return nil
 		}
-		context.Set("userId", userId)
+		context.Set("userId", int(userId))
 		fmt.Println("auth mdlwr: got user", userId)
 		if len(newToken) > 0 {
 			fmt.Println("Refreshed token")
