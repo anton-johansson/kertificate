@@ -10,9 +10,6 @@ import (
 // Run builds the entire object graph and runs the application
 func Run() {
 	database := db.NewDatabase()
-	if err := database.Connect(); err != nil {
-		panic(err)
-	}
 
 	certificateTemplateDAO := db.NewCertificateTemplateDAO(database)
 	consumerTypeDAO := db.NewConsumerTypeDAO(database)
@@ -29,6 +26,11 @@ func Run() {
 	v1 := v1.NewApiV1(authAPI, certificateTemplateAPI, consumerTypeAPI, statusAPI, versionAPI)
 
 	apiServer := api.NewApiServer(v1)
+
+	if err := database.Connect(); err != nil {
+		panic(err)
+	}
+
 	if err := apiServer.Start(); err != nil {
 		panic(err)
 	}
