@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"net/http"
 
 	"pkims.io/pkims/pkg/auth"
@@ -58,21 +57,16 @@ func (api *AuthAPI) checkRequest(next echo.HandlerFunc) echo.HandlerFunc {
 			}
 			return false
 		}(requestPath) {
-			fmt.Println("auth mdlwr: ignoring path", requestPath)
 			return next(context)
 		}
 
 		token := context.Request().Header.Get("Authorization")
 		userId, newToken, err := api.authService.CheckToken(token)
 		if err != nil {
-			fmt.Println("auth mdlwr: denied")
-			context.Error(err)
-			return nil
+			return err
 		}
 		context.Set("userId", int(userId))
-		fmt.Println("auth mdlwr: got user", userId)
 		if len(newToken) > 0 {
-			fmt.Println("Refreshed token")
 			sendNewToken(context, newToken)
 		}
 		return next(context)

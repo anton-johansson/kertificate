@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	v1 "pkims.io/pkims/pkg/api/v1"
+	"pkims.io/pkims/pkg/auth"
 
 	echo "github.com/labstack/echo/v4"
 )
@@ -34,11 +35,12 @@ func (server *ApiServer) Start() error {
 }
 
 func HandleError(err error, context echo.Context) {
-	fmt.Println("error in API:", err)
 	if httpErr, ok := err.(*echo.HTTPError); ok {
 		context.Response().WriteHeader(httpErr.Code)
 	} else if err == sql.ErrNoRows {
 		context.Response().WriteHeader(http.StatusNotFound)
+	} else if err == auth.Unauthorized {
+		context.Response().WriteHeader(http.StatusUnauthorized)
 	} else {
 		fmt.Println("Unhandled API error:", err.Error())
 		context.String(http.StatusInternalServerError, err.Error())
