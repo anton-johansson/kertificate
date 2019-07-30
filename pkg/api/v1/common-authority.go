@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"pkims.io/pkims/pkg/db"
 	"pkims.io/pkims/pkg/pki"
@@ -34,10 +35,20 @@ type CertificateData struct {
 }
 
 type CommonAuthorityData struct {
-	CommonAuthorityId int      `json:"commonAuthorityId"`
-	Name              string   `json:"name"`
-	CreatedBy         UserInfo `json:"createdBy"`
-	CertificateData   string   `json:"privateKeyData"`
+	CommonAuthorityId int       `json:"commonAuthorityId"`
+	Name              string    `json:"name"`
+	CreatedBy         UserInfo  `json:"createdBy"`
+	CertificateData   string    `json:"certificateData"`
+	NotBefore         time.Time `json:"notBefore"`
+	NotAfter          time.Time `json:"notAfter"`
+}
+
+type CommonAuthorityDataForList struct {
+	CommonAuthorityId int       `json:"commonAuthorityId"`
+	Name              string    `json:"name"`
+	CreatedBy         UserInfo  `json:"createdBy"`
+	NotBefore         time.Time `json:"notBefore"`
+	NotAfter          time.Time `json:"notAfter"`
 }
 
 type UserInfo struct {
@@ -56,9 +67,11 @@ func NewCommonAuthorityAPI(generator *pki.KeyGenerator, commonAuthorityDAO *db.C
 }
 
 func (api *CommonAuthorityAPI) Register(group *echo.Group) {
+	group.GET("", api.listCommonAuthorities)
 	group.POST("", api.createCommonAuthority)
 	group.GET("/:commonAuthorityId", api.getCommonAuthority)
 	group.GET("/:commonAuthorityId/private-key", api.getCommonAuthorityPrivateKey)
+	group.DELETE("/:commonAuthorityId", api.deleteCommonAuthority)
 }
 
 func (api *CommonAuthorityAPI) createCommonAuthority(context echo.Context) error {
@@ -97,6 +110,41 @@ func (api *CommonAuthorityAPI) createCommonAuthority(context echo.Context) error
 	return nil
 }
 
+func (api *CommonAuthorityAPI) listCommonAuthorities(context echo.Context) error {
+	commonAuthorities, err := api.commonAuthorityDAO.ListCommonAuthorities()
+	if err != nil {
+		return err
+	}
+
+	response, err := mapCAs(commonAuthorities)
+	if err != nil {
+		return err
+	}
+	return context.JSON(http.StatusOK, response)
+}
+
+func mapCAs(commonAuthorities []db.CommonAuthorityInfo) ([]CommonAuthorityDataForList, error) {
+	output := make([]CommonAuthorityDataForList, len(commonAuthorities))
+	for index, commonAuthority := range commonAuthorities {
+		certificate, err := pki.ToCertificate(commonAuthority)
+		if err != nil {
+			return nil, err
+		}
+		output[index] = CommonAuthorityDataForList{
+			CommonAuthorityId: commonAuthority.CommonAuthorityId,
+			Name:              commonAuthority.Name,
+			CreatedBy: UserInfo{
+				Username:  commonAuthority.CreatedBy.Username,
+				FirstName: commonAuthority.CreatedBy.FirstName,
+				LastName:  commonAuthority.CreatedBy.LastName,
+			},
+			NotBefore: certificate.NotBefore,
+			NotAfter:  certificate.NotAfter,
+		}
+	}
+	return output, nil
+}
+
 func (api *CommonAuthorityAPI) getCommonAuthority(context echo.Context) error {
 	commonAuthorityId, err := strconv.Atoi(context.Param("commonAuthorityId"))
 	if err != nil {
@@ -114,6 +162,11 @@ func (api *CommonAuthorityAPI) getCommonAuthority(context echo.Context) error {
 		return err
 	}
 
+	certificate, err := pki.ToCertificate(commonAuthority)
+	if err != nil {
+		return err
+	}
+
 	response := CommonAuthorityData{
 		CommonAuthorityId: commonAuthority.CommonAuthorityId,
 		Name:              commonAuthority.Name,
@@ -123,6 +176,8 @@ func (api *CommonAuthorityAPI) getCommonAuthority(context echo.Context) error {
 			FirstName: commonAuthority.CreatedBy.FirstName,
 			LastName:  commonAuthority.CreatedBy.LastName,
 		},
+		NotBefore: certificate.NotBefore,
+		NotAfter:  certificate.NotAfter,
 	}
 
 	return context.JSON(http.StatusOK, response)
@@ -151,4 +206,18 @@ func (api *CommonAuthorityAPI) getCommonAuthorityPrivateKey(context echo.Context
 	}
 
 	return context.JSON(http.StatusOK, response)
+}
+
+func (api *CommonAuthorityAPI) deleteCommonAuthority(context echo.Context) error {
+	commonAuthorityId, err := strconv.Atoi(context.Param("commonAuthorityId"))
+	if err != nil {
+		fmt.Println("Could not parse commonAuthorityId:", err)
+		return err
+	}
+
+	if err := api.commonAuthorityDAO.DeleteCommonAuthority(commonAuthorityId); err != nil {
+		return err
+	}
+	context.Response().WriteHeader(http.StatusOK)
+	return nil
 }

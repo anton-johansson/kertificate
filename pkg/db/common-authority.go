@@ -1,5 +1,10 @@
 package db
 
+import (
+	"database/sql"
+	"fmt"
+)
+
 const commonAuthorityLoad = `
 select  "commonAuthority"."commonAuthorityId"
 ,       "commonAuthority"."name"
@@ -28,6 +33,22 @@ values
 ,   $4
 )
 returning "commonAuthorityId";
+`
+
+const commonAuthorityList = `
+select  "commonAuthority"."commonAuthorityId"
+,       "commonAuthority"."name"
+,       "commonAuthority"."certificateData"
+,       "user"."username"
+from    "CommonAuthority" "commonAuthority"
+inner join "User" "user"
+        on      "user"."userId" = "commonAuthority"."createdBy"
+`
+
+const commonAuthorityDelete = `
+delete
+from	"CommonAuthority" "commonAuthority"
+where	"commonAuthority"."commonAuthorityId" = $1;
 `
 
 type CommonAuthority struct {
@@ -93,4 +114,45 @@ func (dao *CommonAuthorityDAO) LoadCommonAuthority(commonAuthorityId int) (Commo
 	commonAuthority.CreatedBy.FirstName = "Anton"
 	commonAuthority.CreatedBy.LastName = "Johansson"
 	return commonAuthority, nil
+}
+
+func (dao *CommonAuthorityDAO) ListCommonAuthorities() ([]CommonAuthorityInfo, error) {
+	rows, err := dao.database.db.Query(commonAuthorityList)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var commonAuthorities []CommonAuthorityInfo
+	for rows.Next() {
+		var commonAuthority CommonAuthorityInfo
+		if err := rows.Scan(
+			&commonAuthority.CommonAuthorityId,
+			&commonAuthority.Name,
+			&commonAuthority.CertificateData,
+			&commonAuthority.CreatedBy.Username); err != nil {
+			fmt.Println("error scanning type in list:", err)
+			continue
+		}
+		// TODO: Load these
+		commonAuthority.CreatedBy.FirstName = "Anton"
+		commonAuthority.CreatedBy.LastName = "Johansson"
+		commonAuthorities = append(commonAuthorities, commonAuthority)
+	}
+	return commonAuthorities, nil
+}
+
+func (dao *CommonAuthorityDAO) DeleteCommonAuthority(commonAuthorityId int) error {
+	result, err := dao.database.db.Exec(commonAuthorityDelete, commonAuthorityId)
+	if err != nil {
+		return err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
 }

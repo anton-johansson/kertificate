@@ -147,3 +147,7 @@ func toPem(dataType string, dataBytes []byte) (string, error) {
 	}
 	return buffer.String(), nil
 }
+
+func ToCertificate(certificate ICertificate) (*x509.Certificate, error) {
+	return x509.ParseCertificate(certificate.GetCertificateData())
+}
