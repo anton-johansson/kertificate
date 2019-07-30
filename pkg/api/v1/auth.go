@@ -3,7 +3,8 @@ package v1
 import (
 	"fmt"
 	"net/http"
-	"pkims/auth"
+
+	"pkims.io/pkims/pkg/auth"
 
 	echo "github.com/labstack/echo/v4"
 )

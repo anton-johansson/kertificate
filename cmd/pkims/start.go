@@ -1,7 +1,7 @@
-package cmd
+package main
 
 import (
-	"pkims/app"
+	"pkims.io/pkims/pkg/app"
 
 	"github.com/spf13/cobra"
 )

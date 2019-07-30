@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	v1 "pkims/api/v1"
+
+	v1 "pkims.io/pkims/pkg/api/v1"
 
 	echo "github.com/labstack/echo/v4"
 )

@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -12,8 +12,7 @@ var rootCommand = &cobra.Command{
 	Short: "Provides a web UI for managing certificates",
 }
 
-// Execute runs the command parser
-func Execute() {
+func main() {
 	if err := rootCommand.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

@@ -1,11 +1,11 @@
 package app
 
 import (
-	"pkims/api"
-	v1 "pkims/api/v1"
-	"pkims/auth"
-	"pkims/db"
-	"pkims/pki"
+	"pkims.io/pkims/pkg/api"
+	v1 "pkims.io/pkims/pkg/api/v1"
+	"pkims.io/pkims/pkg/auth"
+	"pkims.io/pkims/pkg/db"
+	"pkims.io/pkims/pkg/pki"
 )
 
 // Run builds the entire object graph and runs the application

@@ -3,7 +3,8 @@ package auth
 import (
 	"errors"
 	"fmt"
-	"pkims/db"
+
+	"pkims.io/pkims/pkg/db"
 )
 
 type authDelegate interface {

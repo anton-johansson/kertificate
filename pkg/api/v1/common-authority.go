@@ -3,9 +3,10 @@ package v1
 import (
 	"fmt"
 	"net/http"
-	"pkims/db"
-	"pkims/pki"
 	"strconv"
+
+	"pkims.io/pkims/pkg/db"
+	"pkims.io/pkims/pkg/pki"
 
 	"github.com/labstack/echo/v4"
 )

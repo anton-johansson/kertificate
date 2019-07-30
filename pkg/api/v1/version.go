@@ -2,7 +2,8 @@ package v1
 
 import (
 	"net/http"
-	"pkims/version"
+
+	"pkims.io/pkims/pkg/version"
 
 	echo "github.com/labstack/echo/v4"
 )

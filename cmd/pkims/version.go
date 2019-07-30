@@ -1,8 +1,9 @@
-package cmd
+package main
 
 import (
 	"fmt"
-	"pkims/version"
+
+	"pkims.io/pkims/pkg/version"
 
 	"github.com/spf13/cobra"
 )

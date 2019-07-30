@@ -1,4 +1,4 @@
-module pkims
+module pkims.io/pkims
 
 go 1.12
 
