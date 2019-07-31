@@ -26,21 +26,31 @@ func run() error {
 	database := db.NewDatabase()
 
 	certificateTemplateDAO := db.NewCertificateTemplateDAO(database)
+	certificateDAO := db.NewCertificateDAO(database)
 	commonAuthorityDAO := db.NewCommonAuthorityDAO(database)
 	consumerTypeDAO := db.NewConsumerTypeDAO(database)
 	userDAO := db.NewUserDAO(database)
 
 	authService := auth.NewAuthService(userDAO)
-	keyGenerator := pki.NewKeyGenerator()
+	keyGenerator := pki.NewKeyGenerator(commonAuthorityDAO)
 
 	authAPI := v1.NewAuthAPI(authService)
 	certificateTemplateAPI := v1.NewCertificateTemplateAPI(certificateTemplateDAO)
+	certificateAPI := v1.NewCertificateAPI(keyGenerator, certificateDAO)
 	commonAuthorityAPI := v1.NewCommonAuthorityAPI(keyGenerator, commonAuthorityDAO)
 	consumerTypeAPI := v1.NewConsumerTypeAPI(consumerTypeDAO)
 	statusAPI := v1.NewStatusAPI()
 	versionAPI := v1.NewVersionAPI()
 
-	v1 := v1.NewApiV1(authAPI, certificateTemplateAPI, commonAuthorityAPI, consumerTypeAPI, statusAPI, versionAPI)
+	v1 := v1.NewApiV1(
+		authAPI,
+		certificateTemplateAPI,
+		certificateAPI,
+		commonAuthorityAPI,
+		consumerTypeAPI,
+		statusAPI,
+		versionAPI,
+	)
 
 	apiServer := api.NewApiServer(v1)
 

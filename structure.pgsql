@@ -98,6 +98,7 @@ create table "CertificateData"
 ,   "certificateData"       bytea               not null
 ,   "expiresAt"             timestamptz         not null
 )
+select * from "CertificateData";
 
 drop table if exists "CommonAuthority";
 create table "CommonAuthority"
@@ -105,8 +106,6 @@ create table "CommonAuthority"
     "commonAuthorityId"     serial primary key  not null
 ,   "name"                  varchar(30)         not null
 ,   "certificateDataId"     int                 not null    references "CertificateData"("certificateDataId")
-,   "privateKeyData"        bytea               not null
-,   "certificateData"       bytea               not null
 ,   "createdBy"             int                 not null    references "User"("userId")
 );
 select * from "CommonAuthority";
@@ -131,14 +130,14 @@ create table "Consumer"
 drop table if exists "Certificate";
 create table "Certificate"
 (
-    "certificateId" serial primary key  not null
-,   "name"          varchar(30)         not null
-,   "privateKey"    int                 references "PrivateKey"("keyId")
-,   "publicKey"     int                 references "PublicKey"("keyId")
-,   "createdBy"     int                 references "User"("userId")
+    "certificateId"         serial primary key  not null
+,   "name"                  varchar(30)         not null
+,   "certificateDataId"     int                 not null    references "CertificateData"("certificateDataId")
+,   "commonAuthorityId"     int                 not null    references "CommonAuthority"("commonAuthorityId")
+,   "createdBy"             int                 not null    references "User"("userId")
 );
+select * from "Certificate";
 
-select * from "CommonAuthority";
 
 update "User" set "active" = true where "userId" = 4;
 select * from "ConsumerType";

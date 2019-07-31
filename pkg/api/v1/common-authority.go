@@ -76,25 +76,25 @@ func (api *CommonAuthorityAPI) Register(group *echo.Group) {
 
 func (api *CommonAuthorityAPI) createCommonAuthority(context echo.Context) error {
 	userId := userId(context)
-	var data CertificateData
-	if err := context.Bind(&data); err != nil {
+	var body CertificateData
+	if err := context.Bind(&body); err != nil {
 		return err
 	}
 
-	certificateData := pki.Certificate{
-		CountryCode:        data.Subject.CountryCode,
-		State:              data.Subject.State,
-		Locality:           data.Subject.Locality,
-		StreetAddress:      data.Subject.StreetAddress,
-		PostalCode:         data.Subject.PostalCode,
-		Organization:       data.Subject.Organization,
-		OrganizationalUnit: data.Subject.OrganizationalUnit,
-		CommonName:         data.CommonName,
-		ValidFor:           data.ValidFor,
-		KeySize:            data.KeySize,
+	data := pki.CreateCertificateData{
+		CountryCode:        body.Subject.CountryCode,
+		State:              body.Subject.State,
+		Locality:           body.Subject.Locality,
+		StreetAddress:      body.Subject.StreetAddress,
+		PostalCode:         body.Subject.PostalCode,
+		Organization:       body.Subject.Organization,
+		OrganizationalUnit: body.Subject.OrganizationalUnit,
+		CommonName:         body.CommonName,
+		ValidFor:           body.ValidFor,
+		KeySize:            body.KeySize,
 	}
 
-	certificate, privateKeyBytes, certificateBytes, err := api.generator.CreateCommonAuthority(certificateData)
+	certificate, privateKeyBytes, certificateBytes, err := api.generator.CreateCommonAuthority(data)
 	if err != nil {
 		return err
 	}
@@ -111,7 +111,6 @@ func (api *CommonAuthorityAPI) createCommonAuthority(context echo.Context) error
 
 	context.Response().Header().Add("Location", location(context, commonAuthorityId))
 	context.Response().WriteHeader(http.StatusCreated)
-
 	return nil
 }
 
@@ -162,7 +161,7 @@ func (api *CommonAuthorityAPI) getCommonAuthority(context echo.Context) error {
 		return err
 	}
 
-	certificateData, err := api.generator.CertificateToPem(commonAuthority)
+	certificateData, err := pki.CertificateToPem(commonAuthority)
 	if err != nil {
 		return err
 	}
@@ -200,7 +199,7 @@ func (api *CommonAuthorityAPI) getCommonAuthorityPrivateKey(context echo.Context
 		return err
 	}
 
-	privateKeyData, err := api.generator.PrivateKeyToPem(commonAuthority)
+	privateKeyData, err := pki.PrivateKeyToPem(commonAuthority)
 	if err != nil {
 		return err
 	}

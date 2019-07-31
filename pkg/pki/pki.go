@@ -2,70 +2,19 @@ package pki
 
 import (
 	"bytes"
-	"crypto/rand"
-	"crypto/rsa"
 	"crypto/x509"
-	"crypto/x509/pkix"
 	"encoding/pem"
-	"math/big"
-	"time"
 )
 
-type KeyGenerator struct{}
-
-func NewKeyGenerator() *KeyGenerator {
-	return &KeyGenerator{}
+func ToCertificate(certificate ICertificate) (*x509.Certificate, error) {
+	return x509.ParseCertificate(certificate.GetCertificateData())
 }
 
-type ICertificate interface {
-	GetCertificateData() []byte
-}
-
-type IPrivateKey interface {
-	GetPrivateKeyData() []byte
-}
-
-func (generator *KeyGenerator) CreateCommonAuthority(data Certificate) (*x509.Certificate, []byte, []byte, error) {
-	privateKey, err := rsa.GenerateKey(rand.Reader, data.KeySize)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
-
-	now := time.Now()
-	ca := &x509.Certificate{
-		SerialNumber: big.NewInt(1653),
-		Subject: pkix.Name{
-			Country:            []string{data.CountryCode},
-			Province:           []string{data.State},
-			Locality:           []string{data.Locality},
-			StreetAddress:      []string{data.StreetAddress},
-			PostalCode:         []string{data.PostalCode},
-			Organization:       []string{data.Organization},
-			OrganizationalUnit: []string{data.OrganizationalUnit},
-			CommonName:         data.CommonName,
-		},
-		NotBefore:             now,
-		NotAfter:              now.AddDate(0, 0, data.ValidFor),
-		IsCA:                  true,
-		ExtKeyUsage:           []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
-		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
-		BasicConstraintsValid: true,
-	}
-
-	certificateBytes, err := x509.CreateCertificate(rand.Reader, ca, ca, &privateKey.PublicKey, privateKey)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-
-	return ca, privateKeyBytes, certificateBytes, nil
-}
-
-func (generator *KeyGenerator) CertificateToPem(certificate ICertificate) (string, error) {
+func CertificateToPem(certificate ICertificate) (string, error) {
 	return toPem("CERTIFICATE", certificate.GetCertificateData())
 }
 
-func (generator *KeyGenerator) PrivateKeyToPem(privateKey IPrivateKey) (string, error) {
+func PrivateKeyToPem(privateKey IPrivateKey) (string, error) {
 	return toPem("RSA PRIVATE KEY", privateKey.GetPrivateKeyData())
 }
 
@@ -80,8 +29,4 @@ func toPem(dataType string, dataBytes []byte) (string, error) {
 		return "", err
 	}
 	return buffer.String(), nil
-}
-
-func ToCertificate(certificate ICertificate) (*x509.Certificate, error) {
-	return x509.ParseCertificate(certificate.GetCertificateData())
 }
