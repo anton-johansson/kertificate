@@ -90,11 +90,21 @@ create table "PublicKey"
 ,   "content"   varchar(1000)       not null
 );
 
+drop table if exists "CertificateData";
+create table "CertificateData"
+(
+    "certificateDataId"     serial primary key  not null
+,   "privateKeyData"        bytea               not null
+,   "certificateData"       bytea               not null
+,   "expiresAt"             timestamptz         not null
+)
+
 drop table if exists "CommonAuthority";
 create table "CommonAuthority"
 (
     "commonAuthorityId"     serial primary key  not null
 ,   "name"                  varchar(30)         not null
+,   "certificateDataId"     int                 not null    references "CertificateData"("certificateDataId")
 ,   "privateKeyData"        bytea               not null
 ,   "certificateData"       bytea               not null
 ,   "createdBy"             int                 not null    references "User"("userId")
@@ -127,6 +137,8 @@ create table "Certificate"
 ,   "publicKey"     int                 references "PublicKey"("keyId")
 ,   "createdBy"     int                 references "User"("userId")
 );
+
+select * from "CommonAuthority";
 
 update "User" set "active" = true where "userId" = 4;
 select * from "ConsumerType";

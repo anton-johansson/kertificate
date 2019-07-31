@@ -3,49 +3,72 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"time"
 )
 
 const commonAuthorityLoad = `
 select  "commonAuthority"."commonAuthorityId"
 ,       "commonAuthority"."name"
-,       "commonAuthority"."privateKeyData"
-,       "commonAuthority"."certificateData"
+,       "data"."privateKeyData"
+,       "data"."certificateData"
 ,       "user"."username"
 from    "CommonAuthority" "commonAuthority"
+inner join "CertificateData" "data"
+        on      "data"."certificateDataId" = "commonAuthority"."certificateDataId"
 inner join "User" "user"
         on      "user"."userId" = "commonAuthority"."createdBy"
 where	"commonAuthority"."commonAuthorityId" = $1
 `
 
 const commonAuthoritySave = `
+with "data" as
+(
+    insert into "CertificateData"
+    (
+            "privateKeyData"
+    ,       "certificateData"
+    ,       "expiresAt"
+    )
+    values
+    (
+            $1
+	,       $2
+    ,       $3
+    )
+	returning "certificateDataId"
+)
 insert into "CommonAuthority"
 (
-    "name"
-,   "privateKeyData"
-,   "certificateData"
-,   "createdBy"
+        "certificateDataId"
+,       "name"
+,       "createdBy"
 )
-values
-(
-    $1
-,   $2
-,   $3
-,   $4
-)
+select  "certificateDataId"
+,       $4
+,       $5
+from    "data"
 returning "commonAuthorityId";
 `
 
 const commonAuthorityList = `
 select  "commonAuthority"."commonAuthorityId"
 ,       "commonAuthority"."name"
-,       "commonAuthority"."certificateData"
+,       "data"."certificateData"
 ,       "user"."username"
 from    "CommonAuthority" "commonAuthority"
+inner join "CertificateData" "data"
+        on      "data"."certificateDataId" = "commonAuthority"."certificateDataId"
 inner join "User" "user"
         on      "user"."userId" = "commonAuthority"."createdBy"
 `
 
 const commonAuthorityDelete = `
+delete
+from    "CertificateData" "data"
+inner join "CommonAuthority" "commonAuthority"
+		on      "commonAuthority"."certificateDataId" = "data"."certificateDataId"
+		and     "commonAuthority"."commonAuthorityId" = $1;
+
 delete
 from	"CommonAuthority" "commonAuthority"
 where	"commonAuthority"."commonAuthorityId" = $1;
@@ -90,9 +113,15 @@ func NewCommonAuthorityDAO(database *Database) *CommonAuthorityDAO {
 	return &CommonAuthorityDAO{database}
 }
 
-func (dao *CommonAuthorityDAO) SaveCommonAuthority(name string, privateKeyData, certificateData []byte, userId int) (int, error) {
+func (dao *CommonAuthorityDAO) SaveCommonAuthority(name string, privateKeyData, certificateData []byte, expiresAt time.Time, userId int) (int, error) {
 	var commonAuthorityId int
-	if err := dao.database.db.QueryRow(commonAuthoritySave, name, privateKeyData, certificateData, userId).Scan(&commonAuthorityId); err != nil {
+	if err := dao.database.db.QueryRow(
+		commonAuthoritySave,
+		privateKeyData,
+		certificateData,
+		expiresAt,
+		name,
+		userId).Scan(&commonAuthorityId); err != nil {
 		return 0, err
 	}
 	return commonAuthorityId, nil

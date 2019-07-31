@@ -94,12 +94,17 @@ func (api *CommonAuthorityAPI) createCommonAuthority(context echo.Context) error
 		KeySize:            data.KeySize,
 	}
 
-	privateKeyBytes, certificateBytes, err := api.generator.CreateCommonAuthority(certificateData)
+	certificate, privateKeyBytes, certificateBytes, err := api.generator.CreateCommonAuthority(certificateData)
 	if err != nil {
 		return err
 	}
 
-	commonAuthorityId, err := api.commonAuthorityDAO.SaveCommonAuthority(data.CommonName, privateKeyBytes, certificateBytes, userId)
+	commonAuthorityId, err := api.commonAuthorityDAO.SaveCommonAuthority(
+		data.CommonName,
+		privateKeyBytes,
+		certificateBytes,
+		certificate.NotAfter,
+		userId)
 	if err != nil {
 		return err
 	}

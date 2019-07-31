@@ -25,10 +25,10 @@ type IPrivateKey interface {
 	GetPrivateKeyData() []byte
 }
 
-func (generator *KeyGenerator) CreateCommonAuthority(data Certificate) ([]byte, []byte, error) {
+func (generator *KeyGenerator) CreateCommonAuthority(data Certificate) (*x509.Certificate, []byte, []byte, error) {
 	privateKey, err := rsa.GenerateKey(rand.Reader, data.KeySize)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
 
@@ -55,10 +55,10 @@ func (generator *KeyGenerator) CreateCommonAuthority(data Certificate) ([]byte, 
 
 	certificateBytes, err := x509.CreateCertificate(rand.Reader, ca, ca, &privateKey.PublicKey, privateKey)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
-	return privateKeyBytes, certificateBytes, nil
+	return ca, privateKeyBytes, certificateBytes, nil
 }
 
 func (generator *KeyGenerator) CertificateToPem(certificate ICertificate) (string, error) {
