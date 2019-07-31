@@ -63,16 +63,20 @@ inner join "User" "user"
 `
 
 const commonAuthorityDelete = `
+with "deleted" as
+(
+        delete
+        from	"CommonAuthority" "commonAuthority"
+		where	"commonAuthority"."commonAuthorityId" = $1
+		returning "certificateDataId"
+)
 delete
 from    "CertificateData" "data"
-inner join "CommonAuthority" "commonAuthority"
-		on      "commonAuthority"."certificateDataId" = "data"."certificateDataId"
-		and     "commonAuthority"."commonAuthorityId" = $1;
-
-delete
-from	"CommonAuthority" "commonAuthority"
-where	"commonAuthority"."commonAuthorityId" = $1;
-`
+where   "data"."certificateDataId" =
+(
+    select  "certificateDataId"
+    from    "deleted"
+);`
 
 type CommonAuthority struct {
 	CommonAuthorityData

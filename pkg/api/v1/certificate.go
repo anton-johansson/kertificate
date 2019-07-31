@@ -1,7 +1,9 @@
 package v1
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	echo "github.com/labstack/echo/v4"
 	"pkims.io/pkims/pkg/db"
@@ -27,6 +29,7 @@ func NewCertificateAPI(generator *pki.KeyGenerator, certificateDAO *db.Certifica
 
 func (api *CertificateAPI) Register(group *echo.Group) {
 	group.POST("", api.createCertificate)
+	group.DELETE("/:certificateId", api.deleteCertificate)
 }
 
 func (api *CertificateAPI) createCertificate(context echo.Context) error {
@@ -61,5 +64,19 @@ func (api *CertificateAPI) createCertificate(context echo.Context) error {
 
 	context.Response().Header().Add("Location", location(context, certificateId))
 	context.Response().WriteHeader(http.StatusCreated)
+	return nil
+}
+
+func (api *CertificateAPI) deleteCertificate(context echo.Context) error {
+	certificateId, err := strconv.Atoi(context.Param("certificateId"))
+	if err != nil {
+		fmt.Println("Could not parse certificateId:", err)
+		return err
+	}
+
+	if err := api.certificateDAO.DeleteCertificate(certificateId); err != nil {
+		return err
+	}
+	context.Response().WriteHeader(http.StatusOK)
 	return nil
 }

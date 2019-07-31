@@ -1,6 +1,9 @@
 package db
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 const certificateSave = `
 with "data" as
@@ -31,8 +34,23 @@ select  "certificateDataId"
 ,       $5
 ,       $6
 from    "data"
-returning "certificateId";
-`
+returning "certificateId";`
+
+const certificateDelete = `
+with "deleted" as
+(
+        delete
+        from	"Certificate" "certificate"
+		where	"certificate"."certificateId" = $1
+		returning "certificateDataId"
+)
+delete
+from    "CertificateData" "data"
+where   "data"."certificateDataId" =
+(
+    select  "certificateDataId"
+    from    "deleted"
+);`
 
 type CertificateDAO struct {
 	database *Database
@@ -55,4 +73,19 @@ func (dao *CertificateDAO) SaveCertificate(commonAuthorityId int, name string, p
 		return 0, err
 	}
 	return certificateId, nil
+}
+
+func (dao *CertificateDAO) DeleteCertificate(certificateId int) error {
+	result, err := dao.database.db.Exec(certificateDelete, certificateId)
+	if err != nil {
+		return err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
 }
