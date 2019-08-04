@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 
-module.exports = {
+module.exports = env => ({
     entry: './src/index.js',
     module: {
         rules: [
@@ -20,10 +20,12 @@ module.exports = {
         filename: 'bundle.js'
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.DefinePlugin({'process.env.API_BASE': JSON.stringify(env.API_BASE)}),
     ],
     devServer: {
         contentBase: './dist',
-        hot: true
+        hot: true,
+        port: 8000
     }
-};
+});

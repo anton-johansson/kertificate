@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --config ./webpack.config.js --mode development",
+    "start": "webpack-dev-server --config ./webpack.config.js --env.API_BASE=http://localhost:8080 --mode development",
     "test": "echo \"No test specified\" && exit 0"
   },
   "devDependencies": {
     "@babel/core": "7.4.5",
+    "@babel/plugin-transform-runtime": "7.5.5",
     "@babel/preset-env": "7.4.5",
     "@babel/preset-react": "7.0.0",
     "babel-loader": "8.0.6",
@@ -21,6 +22,10 @@
     "@material-ui/icons": "4.2.1",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "react-router-dom": "^5.0.1"
+    "react-redux": "7.1.0",
+    "react-router-dom": "5.0.1",
+    "redux": "4.0.4",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "2.3.0"
   }
 }

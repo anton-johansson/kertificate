@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -8,6 +9,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+
+import { login } from './actions/authentication';
 
 const styles = makeStyles(theme => ({
     '@global': {
@@ -34,7 +37,13 @@ const styles = makeStyles(theme => ({
     },
 }));
 
-const SignIn = () => {
+const SignIn = ({login}) => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const onLogin = () => {
+        login(username, password);
+    }
+
     const classes = styles();
     return (
         <Container maxWidth="xs">
@@ -53,7 +62,8 @@ const SignIn = () => {
                         id="username"
                         label="Username"
                         name="username"
-                        autoComplete="email"
+                        autoComplete="username"
+                        onChange={e => setUsername(e.target.value)}
                         autoFocus
                     />
                     <TextField
@@ -65,6 +75,7 @@ const SignIn = () => {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        onChange={e => setPassword(e.target.value)}
                     />
                     <FormControlLabel
                         control={<Checkbox value="stay-signed-in" color="primary" />}
@@ -75,6 +86,7 @@ const SignIn = () => {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={onLogin}
                     >
                         Sign In
                     </Button>
@@ -84,4 +96,7 @@ const SignIn = () => {
     );
 }
 
-export default SignIn;
+const mapStateToProps = () => ({});
+const mapDispatchToProps = {login};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
