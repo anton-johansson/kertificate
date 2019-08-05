@@ -9,6 +9,7 @@ import (
 	"pkims.io/pkims/pkg/auth"
 
 	echo "github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 // ApiServer hosts the RESTful API
@@ -29,6 +30,10 @@ func NewApiServer(v1 *v1.ApiV1) *ApiServer {
 // Start starts the API server
 func (server *ApiServer) Start() error {
 	v1Group := server.api.Group("/v1", server.v1.Middlewares()...)
+
+	server.api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		ExposeHeaders: []string{"X-Set-Authorization"},
+	}))
 
 	server.v1.Register(v1Group)
 	return server.api.Start(":8080")

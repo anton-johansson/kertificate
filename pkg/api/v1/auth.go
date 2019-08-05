@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"pkims.io/pkims/pkg/auth"
+	"pkims.io/pkims/pkg/db"
 
 	echo "github.com/labstack/echo/v4"
 )
@@ -12,6 +13,7 @@ var ignoredPaths = [...]string{"/v1/authentication/authenticate", "/v1/status", 
 
 type AuthAPI struct {
 	authService *auth.AuthService
+	userDAO     *db.UserDAO
 }
 
 type authRequest struct {
@@ -19,12 +21,13 @@ type authRequest struct {
 	Password string `json:"password"`
 }
 
-func NewAuthAPI(authService *auth.AuthService) *AuthAPI {
-	return &AuthAPI{authService}
+func NewAuthAPI(authService *auth.AuthService, userDAO *db.UserDAO) *AuthAPI {
+	return &AuthAPI{authService, userDAO}
 }
 
 func (api *AuthAPI) Register(group *echo.Group) {
 	group.POST("/authenticate", api.authenticate)
+	group.GET("/me", api.getSelf)
 }
 
 func (api *AuthAPI) GetAuthMiddleware() echo.MiddlewareFunc {
@@ -44,6 +47,15 @@ func (api *AuthAPI) authenticate(context echo.Context) error {
 	sendNewToken(context, token)
 	context.Response().WriteHeader(http.StatusOK)
 	return nil
+}
+
+func (api *AuthAPI) getSelf(context echo.Context) error {
+	userId := userId(context)
+	user, err := api.userDAO.GetUser(userId)
+	if err != nil {
+		return err
+	}
+	return context.JSON(http.StatusOK, user)
 }
 
 func (api *AuthAPI) checkRequest(next echo.HandlerFunc) echo.HandlerFunc {

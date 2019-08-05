@@ -1,7 +1,7 @@
-import { CHECK_REMEMBERED_TOKEN_FAILURE, LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, CHECK_REMEMBERED_TOKEN_SUCCESS } from '../actions/authentication';
+import { CHECK_REMEMBERED_TOKEN, CHECK_REMEMBERED_TOKEN_FAILURE, LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, CHECK_REMEMBERED_TOKEN_SUCCESS } from '../actions/authentication';
 
-const initial = {
-    checkingRememberedAuthentication: true,
+const INITIAL_STATE = {
+    checkingRememberedAuthentication: false,
     token: '',
     information: {
         username: '',
@@ -10,8 +10,13 @@ const initial = {
     },
 };
 
-export default function authenticationReducer(state = initial, action) {
+export default function authenticationReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
+        case CHECK_REMEMBERED_TOKEN:
+            return {
+                ...state,
+                checkingRememberedAuthentication: true,
+            };
         case CHECK_REMEMBERED_TOKEN_SUCCESS:
             return {
                 ...state,
@@ -41,15 +46,7 @@ export default function authenticationReducer(state = initial, action) {
             console.log('login failed!');
             return state;
         case LOGOUT:
-            return {
-                ...state,
-                token: '',
-                information: {
-                    username: '',
-                    firstName: '',
-                    lastName: '',
-                },
-            }
+            return INITIAL_STATE;
         default:
             return state;
     }

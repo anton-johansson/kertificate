@@ -5,6 +5,11 @@ import (
 	"fmt"
 )
 
+const getUser = `
+select	"username"
+from	"User" "user"
+where	"user"."userId" = $1`
+
 const getUserIdByUsername = `
 select	"userId"
 from	"User" "user"
@@ -30,6 +35,12 @@ from	"User" "user"
 where	"user"."userId" = $1
 `
 
+type User struct {
+	Username  string
+	FirstName string
+	LastName  string
+}
+
 type UserDAO struct {
 	database *Database
 }
@@ -38,6 +49,19 @@ func NewUserDAO(database *Database) *UserDAO {
 	return &UserDAO{
 		database,
 	}
+}
+
+func (dao *UserDAO) GetUser(userId int) (User, error) {
+	row := dao.database.db.QueryRow(getUser, userId)
+	var user User
+	err := row.Scan(&user.Username)
+	if err != nil {
+		return User{}, err
+	}
+	// TODO: move these to the table
+	user.FirstName = "Anton"
+	user.LastName = "Johansson"
+	return user, nil
 }
 
 func (dao *UserDAO) GetOrCreateId(username string) int64 {

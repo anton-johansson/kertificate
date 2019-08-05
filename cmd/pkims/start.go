@@ -34,7 +34,7 @@ func run() error {
 	authService := auth.NewAuthService(userDAO)
 	keyGenerator := pki.NewKeyGenerator(commonAuthorityDAO)
 
-	authAPI := v1.NewAuthAPI(authService)
+	authAPI := v1.NewAuthAPI(authService, userDAO)
 	certificateTemplateAPI := v1.NewCertificateTemplateAPI(certificateTemplateDAO)
 	certificateAPI := v1.NewCertificateAPI(keyGenerator, certificateDAO)
 	commonAuthorityAPI := v1.NewCommonAuthorityAPI(keyGenerator, commonAuthorityDAO)
