@@ -1,14 +1,4 @@
-import Api from '../api';
-
-const tokenKey = 'X-Authentication-Token';
-const getToken = () => localStorage.getItem(tokenKey);
-const setToken = token => {
-    if (!!token) {
-        localStorage.setItem(tokenKey, token);
-    } else {
-        localStorage.removeItem(tokenKey);
-    }
-}
+import Api, { getToken, setToken } from '../api';
 
 export const CHECK_REMEMBERED_TOKEN = 'CHECK_REMEMBERED_TOKEN';
 export const CHECK_REMEMBERED_TOKEN_SUCCESS = 'CHECK_REMEMBERED_TOKEN_SUCCESS';
@@ -25,13 +15,14 @@ export const checkRememberedToken = () => {
 
         console.log('found existing token, checking it against api:', token);
         const api = new Api(dispatch, getState);
-        api.setCustomToken(token);
+        api.setToken(token);
 
         const response = await api.get('/v1/authentication/me');
         if (response.status === 200) {
             const {username, firstName, lastName, emailAddress} = response.body;
             dispatch({
                 type: CHECK_REMEMBERED_TOKEN_SUCCESS,
+                token: api.getToken(),
                 username,
                 firstName,
                 lastName,

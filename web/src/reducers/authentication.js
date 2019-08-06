@@ -1,4 +1,5 @@
 import { CHECK_REMEMBERED_TOKEN, CHECK_REMEMBERED_TOKEN_FAILURE, LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, CHECK_REMEMBERED_TOKEN_SUCCESS } from '../actions/authentication';
+import { REFRESH_TOKEN } from '../api';
 
 const INITIAL_STATE = {
     checkingRememberedAuthentication: false,
@@ -22,6 +23,7 @@ export default function authenticationReducer(state = INITIAL_STATE, action) {
             return {
                 ...state,
                 checkingRememberedAuthentication: false,
+                token: action.token,
                 information: {
                     username: action.username,
                     firstName: action.firstName,
@@ -50,6 +52,11 @@ export default function authenticationReducer(state = INITIAL_STATE, action) {
             return state;
         case LOGOUT:
             return INITIAL_STATE;
+        case REFRESH_TOKEN:
+            return {
+                ...state,
+                token: action.newToken,
+            };
         default:
             return state;
     }
