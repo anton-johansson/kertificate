@@ -27,3 +27,8 @@ $ addlicense -c 'Anton Johansson' *
 ```
 
 Note: Above command might only work for ZSH. Need to verify and fix so we can verify this in CI.
+
+
+## License
+
+This tool is distributed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0), see [LICENSE](./LICENSE) for more information.
