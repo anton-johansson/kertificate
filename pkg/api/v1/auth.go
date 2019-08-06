@@ -35,7 +35,10 @@ func (api *AuthAPI) GetAuthMiddleware() echo.MiddlewareFunc {
 }
 
 func (api *AuthAPI) authenticate(context echo.Context) error {
-	data := authRequest{}
+	data := authRequest{
+		Username: "",
+		Password: "",
+	}
 	if err := context.Bind(&data); err != nil {
 		return err
 	}
