@@ -17,3 +17,13 @@ Start web UI with hot-reload (runs on port `8000`):
 $ cd web/
 $ npm start
 ```
+
+
+## Adding license notice to files
+
+```shell
+$ go get -u github.com/google/addlicense
+$ addlicense -c 'Anton Johansson' **/*.{go,js}
+```
+
+Note: Above command might only work for ZSH. Need to verify and fix so we can verify this in CI.
