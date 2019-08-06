@@ -24,6 +24,7 @@ class Api {
     constructor(dispatch, getState) {
         this.dispatch = dispatch;
         this.token = getState().authentication.token;
+        this.checkResponse = this.checkResponse.bind(this);
     }
 
     setToken(token) {
