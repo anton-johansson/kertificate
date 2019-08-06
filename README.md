@@ -23,7 +23,7 @@ $ npm start
 
 ```shell
 $ go get -u github.com/google/addlicense
-$ addlicense -c 'Anton Johansson' **/*.{go,js}
+$ addlicense -c 'Anton Johansson' *
 ```
 
 Note: Above command might only work for ZSH. Need to verify and fix so we can verify this in CI.
