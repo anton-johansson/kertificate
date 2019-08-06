@@ -3,83 +3,100 @@ package db
 import (
 	"database/sql"
 	"fmt"
+
+	"pkims.io/pkims/pkg/model"
 )
 
 const getUser = `
-select	"username"
-from	"User" "user"
-where	"user"."userId" = $1`
+select  "user"."username"
+,       "user"."firstName"
+,       "user"."lastName"
+,       "user"."emailAddress"
+from    "User" "user"
+where   "user"."userId" = $1`
 
-const getUserIdByUsername = `
-select	"userId"
-from	"User" "user"
-where	lower("user"."username") = lower($1);
-`
+const updateUserByUsername = `
+update  "User" "user"
+set     "username" = $1
+,       "firstName" = $2
+,       "lastName" = $3
+,       "emailAddress" = $4
+,       "loggedInAt" = now()
+where   lower("user"."username") = lower($1)
+returning "userId";`
 
 const createUserAndGetId = `
-insert into "User" ("username")
-values ($1)
-returning "userId";
-`
+insert into "User"
+(
+        "username"
+,       "firstName"
+,       "lastName"
+,       "emailAddress"
+)
+values
+(
+        $1
+,       $2
+,       $3
+,       $4
+)
+returning "userId";`
 
 const deactivateUserIfExists = `
 update	"User" as "user"
 set		"active" = false
 where	lower("user"."username") = lower($1)
-and		"user"."active" = true;
-`
+and		"user"."active" = true;`
 
 const isActive = `
-select	"active"
+select	"user"."active"
 from	"User" "user"
-where	"user"."userId" = $1
-`
-
-type User struct {
-	Username  string
-	FirstName string
-	LastName  string
-}
+where	"user"."userId" = $1`
 
 type UserDAO struct {
 	database *Database
 }
 
 func NewUserDAO(database *Database) *UserDAO {
-	return &UserDAO{
-		database,
-	}
+	return &UserDAO{database}
 }
 
-func (dao *UserDAO) GetUser(userId int) (User, error) {
+func (dao *UserDAO) GetUser(userId int) (model.User, error) {
 	row := dao.database.db.QueryRow(getUser, userId)
-	var user User
-	err := row.Scan(&user.Username)
-	if err != nil {
-		return User{}, err
+	var user model.User
+	if err := row.Scan(
+		&user.Username,
+		&user.FirstName,
+		&user.LastName,
+		&user.EmailAddress); err != nil {
+		return model.User{}, err
 	}
-	// TODO: move these to the table
-	user.FirstName = "Anton"
-	user.LastName = "Johansson"
 	return user, nil
 }
 
-func (dao *UserDAO) GetOrCreateId(username string) int64 {
-	row := dao.database.db.QueryRow(getUserIdByUsername, username)
-	var userId int64
-	err := row.Scan(&userId)
+func (dao *UserDAO) GetOrCreateUser(user model.User) (model.User, error) {
+	row := dao.database.db.QueryRow(updateUserByUsername,
+		user.Username,
+		user.FirstName,
+		user.LastName,
+		user.EmailAddress)
+	err := row.Scan(&user.UserId)
 	if err == nil {
-		return userId
+		return user, nil
 	} else if err != sql.ErrNoRows {
 		fmt.Println("error scanning 1:", err)
-		return -1
+		return model.User{}, err
 	}
 
-	if err := dao.database.db.QueryRow(createUserAndGetId, username).Scan(&userId); err != nil {
+	if err := dao.database.db.QueryRow(createUserAndGetId,
+		user.Username,
+		user.FirstName,
+		user.LastName,
+		user.EmailAddress).Scan(&user.UserId); err != nil {
 		fmt.Println("error creating user:", err)
-		return -1
+		return model.User{}, err
 	}
-	return userId
+	return user, nil
 }
 
 func (dao *UserDAO) DeactivateIfExists(username string) {
@@ -90,7 +107,7 @@ func (dao *UserDAO) DeactivateIfExists(username string) {
 }
 
 // IsActive checks if a user is active
-func (dao *UserDAO) IsActive(userId int64) bool {
+func (dao *UserDAO) IsActive(userId int) bool {
 	row := dao.database.db.QueryRow(isActive, userId)
 	var active bool
 	err := row.Scan(&active)

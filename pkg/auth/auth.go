@@ -5,15 +5,11 @@ import (
 	"fmt"
 
 	"pkims.io/pkims/pkg/db"
+	"pkims.io/pkims/pkg/model"
 )
 
 type authDelegate interface {
-	Login(username string, password string) *authResult
-}
-
-type authResult struct {
-	username string
-	active   bool
+	Login(username string, password string) *model.User
 }
 
 type AuthService struct {
@@ -29,23 +25,28 @@ func NewAuthService(userDAO *db.UserDAO) *AuthService {
 }
 
 // Login attempts to log a user in. It returns either a login token back, or an error
-func (service *AuthService) Login(username string, password string) (string, error) {
-	result := service.delegate.Login(username, password)
-	if result == nil {
-		service.userDAO.DeactivateIfExists(username)
-		return "", errors.New("Bad credentials")
+func (service *AuthService) Login(username string, password string) (model.User, string, error) {
+	user := service.delegate.Login(username, password)
+	if user == nil {
+		service.userDAO.DeactivateIfExists(user.Username)
+		return model.User{}, "", errors.New("Bad credentials")
 	}
-	userId := service.userDAO.GetOrCreateId(result.username)
-	fmt.Println("Got userId", userId)
-	token, err := generateToken(userId, service.key)
+	userData, err := service.userDAO.GetOrCreateUser(*user)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("error getting/creating user:", err)
+		return model.User{}, "", err
 	}
-	return token, err
+	fmt.Println("Got userId", userData.UserId)
+	token, err := generateToken(userData.UserId, service.key)
+	if err != nil {
+		fmt.Println("error generating token:", err)
+		return model.User{}, "", err
+	}
+	return userData, token, nil
 }
 
 // CheckToken checks an existing token by validating it and refreshing it if necessary
-func (service *AuthService) CheckToken(token string) (int64, string, error) {
+func (service *AuthService) CheckToken(token string) (int, string, error) {
 	userId, expired := decryptToken(token, service.key)
 	if userId <= 0 {
 		return 0, "", Unauthorized

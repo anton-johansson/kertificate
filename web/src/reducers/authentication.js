@@ -7,6 +7,7 @@ const INITIAL_STATE = {
         username: '',
         firstName: '',
         lastName: '',
+        emailAddress: '',
     },
 };
 
@@ -25,6 +26,7 @@ export default function authenticationReducer(state = INITIAL_STATE, action) {
                     username: action.username,
                     firstName: action.firstName,
                     lastName: action.lastName,
+                    emailAddress: action.emailAddress,
                 },
             };
         case CHECK_REMEMBERED_TOKEN_FAILURE:
@@ -40,6 +42,7 @@ export default function authenticationReducer(state = INITIAL_STATE, action) {
                     username: action.username,
                     firstName: action.firstName,
                     lastName: action.lastName,
+                    emailAddress: action.emailAddress,
                 },
             };
         case LOGIN_FAILED:

@@ -1,23 +1,14 @@
 drop table "User";
 create table "User"
 (
-    "userId"    serial primary key  not null
-,   "username"  varchar(30)         not null
-,   "active"    boolean             not null    default true
+    "userId"        serial primary key  not null
+,   "username"      varchar(30)         not null
+,   "firstName"     varchar(100)        not null
+,   "lastName"      varchar(100)        not null
+,   "emailAddress"  varchar(100)        not null
+,   "active"        boolean             not null    default true
+,   "loggedInAt"    timestamptz         not null    default now()
 );
-
-insert into "User"("username")
-values('anton');
-
-select  *
-from    "User";
-
-
-update	"User" as "user"
-set		"active" = true
-where	lower("user"."username") = lower('anton');
-
-delete from "User";
 
 create type "KeySize" as enum
 (

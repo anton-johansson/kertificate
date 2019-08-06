@@ -12,7 +12,7 @@ const refreshedAtLayout = "2006-01-02T15:04:05.000"
 
 var v2 = paseto.NewV2()
 
-func generateToken(userId int64, key []byte) (string, error) {
+func generateToken(userId int, key []byte) (string, error) {
 	issuedAt := time.Now().UTC()
 	expiresAt := issuedAt.Add(time.Hour)
 	refreshesAt := issuedAt.Add(time.Minute * 10)
@@ -26,14 +26,14 @@ func generateToken(userId int64, key []byte) (string, error) {
 		Expiration: expiresAt,
 		NotBefore:  issuedAt,
 	}
-	jsonToken.Set("userId", strconv.FormatInt(userId, 10))
+	jsonToken.Set("userId", strconv.Itoa(userId))
 	jsonToken.Set("refreshedAt", refreshesAt.Format(refreshedAtLayout))
 	footer := ""
 
 	return v2.Encrypt(key, jsonToken, footer)
 }
 
-func decryptToken(token string, key []byte) (int64, bool) {
+func decryptToken(token string, key []byte) (int, bool) {
 	var (
 		jsonToken paseto.JSONToken
 		footer    string
@@ -49,7 +49,7 @@ func decryptToken(token string, key []byte) (int64, bool) {
 	}
 
 	value := jsonToken.Get("userId")
-	userId, err := strconv.ParseInt(value, 10, 64)
+	userId, err := strconv.Atoi(value)
 	if err != nil {
 		fmt.Println("Could not parse userId from token:", err)
 		return 0, false

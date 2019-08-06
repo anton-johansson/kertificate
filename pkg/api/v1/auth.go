@@ -39,13 +39,13 @@ func (api *AuthAPI) authenticate(context echo.Context) error {
 	if err := context.Bind(&data); err != nil {
 		return err
 	}
-	token, err := api.authService.Login(data.Username, data.Password)
+	user, token, err := api.authService.Login(data.Username, data.Password)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, err)
 		return nil
 	}
 	sendNewToken(context, token)
-	context.Response().WriteHeader(http.StatusOK)
+	context.JSON(http.StatusOK, user)
 	return nil
 }
 
