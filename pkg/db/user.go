@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"pkims.io/pkims/pkg/model"
+	"kertificate.io/kertificate/pkg/model"
 )
 
 const getUser = `

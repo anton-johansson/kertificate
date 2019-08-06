@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"pkims.io/pkims/pkg/version"
+	"kertificate.io/kertificate/pkg/version"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ var short bool
 func init() {
 	var command = &cobra.Command{
 		Use:   "version",
-		Short: "Prints the version of PKIMS",
+		Short: "Prints the version of Kertificate",
 		Run: func(command *cobra.Command, args []string) {
 			info := version.Info()
 			if short {

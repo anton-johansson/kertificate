@@ -1,6 +1,6 @@
-# PKI management system
+# Kertificate
 
-PKIMS is a web UI that allows you to administrate your common authorities and server certificates.
+Kertificate is a PKI management system that allows you to administrate your common authorities and server and client certificates.
 
 
 ## Development
@@ -8,7 +8,7 @@ PKIMS is a web UI that allows you to administrate your common authorities and se
 Start API server (runs on port `8080`):
 
 ```shell
-$ make linux && ./bin/pkims-linux-amd64 start
+$ make linux && ./bin/kertificate-linux-amd64 start
 ```
 
 Start web UI with hot-reload (runs on port `8000`):

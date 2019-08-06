@@ -8,7 +8,7 @@ import (
 	"math/big"
 	"time"
 
-	"pkims.io/pkims/pkg/db"
+	"kertificate.io/kertificate/pkg/db"
 )
 
 type CreateCertificateData struct {

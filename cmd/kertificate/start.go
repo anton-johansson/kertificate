@@ -1,11 +1,11 @@
 package main
 
 import (
-	"pkims.io/pkims/pkg/api"
-	v1 "pkims.io/pkims/pkg/api/v1"
-	"pkims.io/pkims/pkg/auth"
-	"pkims.io/pkims/pkg/db"
-	"pkims.io/pkims/pkg/pki"
+	"kertificate.io/kertificate/pkg/api"
+	v1 "kertificate.io/kertificate/pkg/api/v1"
+	"kertificate.io/kertificate/pkg/auth"
+	"kertificate.io/kertificate/pkg/db"
+	"kertificate.io/kertificate/pkg/pki"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ import (
 func init() {
 	var command = &cobra.Command{
 		Use:   "start",
-		Short: "Starts an instance of PKIMS",
+		Short: "Starts an instance of Kertificate",
 		RunE: func(command *cobra.Command, args []string) error {
 			return run()
 		},

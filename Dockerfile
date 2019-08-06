@@ -5,7 +5,7 @@ WORKDIR /src/golang
 RUN make linux
 
 FROM alpine:3.9.3
-COPY --from=build /src/golang/build/pkims-linux-amd64 /usr/bin/pkims
-RUN addgroup -S -g 1000 pkims && adduser -S -u 1000 -G pkims pkims
+COPY --from=build /src/golang/build/kertificate-linux-amd64 /usr/bin/kertificate
+RUN addgroup -S -g 1000 kertificate && adduser -S -u 1000 -G kertificate kertificate
 USER 1000
-ENTRYPOINT ["pkims", "start"]
+ENTRYPOINT ["kertificate", "start"]

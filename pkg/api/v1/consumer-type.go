@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"pkims.io/pkims/pkg/db"
+	"kertificate.io/kertificate/pkg/db"
 
 	"github.com/labstack/echo/v4"
 )

@@ -3,7 +3,7 @@ package auth
 import (
 	"strings"
 
-	"pkims.io/pkims/pkg/model"
+	"kertificate.io/kertificate/pkg/model"
 )
 
 type dummy struct {

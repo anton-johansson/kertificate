@@ -8,8 +8,8 @@ import (
 )
 
 var rootCommand = &cobra.Command{
-	Use:   "pkims",
-	Short: "Provides a web UI for managing certificates",
+	Use:   "kertificate",
+	Short: "Provides a web UI for managing common authorities and certificates",
 }
 
 func main() {

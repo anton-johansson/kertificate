@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	echo "github.com/labstack/echo/v4"
-	"pkims.io/pkims/pkg/db"
-	"pkims.io/pkims/pkg/pki"
+	"kertificate.io/kertificate/pkg/db"
+	"kertificate.io/kertificate/pkg/pki"
 )
 
 type CreateCertificateRequest struct {

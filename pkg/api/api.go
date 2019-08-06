@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	v1 "pkims.io/pkims/pkg/api/v1"
-	"pkims.io/pkims/pkg/auth"
+	v1 "kertificate.io/kertificate/pkg/api/v1"
+	"kertificate.io/kertificate/pkg/auth"
 
 	echo "github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

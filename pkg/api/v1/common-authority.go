@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"pkims.io/pkims/pkg/db"
-	"pkims.io/pkims/pkg/pki"
+	"kertificate.io/kertificate/pkg/db"
+	"kertificate.io/kertificate/pkg/pki"
 
 	"github.com/labstack/echo/v4"
 )

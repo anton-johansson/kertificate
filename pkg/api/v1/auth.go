@@ -3,8 +3,8 @@ package v1
 import (
 	"net/http"
 
-	"pkims.io/pkims/pkg/auth"
-	"pkims.io/pkims/pkg/db"
+	"kertificate.io/kertificate/pkg/auth"
+	"kertificate.io/kertificate/pkg/db"
 
 	echo "github.com/labstack/echo/v4"
 )

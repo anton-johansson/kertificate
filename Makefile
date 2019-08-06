@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := build
 
-BINARY = pkims
+BINARY = kertificate
 MODULE = ${BINARY}.io/${BINARY}
 VERSION = 0.0.0
 DOCKER_REGISTRY = antonjohansson
@@ -30,13 +30,13 @@ test: install
 	go test ${PACKAGE_LIST}
 
 linux: install
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-linux-amd64 ./cmd/pkims/*
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-linux-amd64 ./cmd/kertificate/*
 
 darwin: install
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-darwin-amd64 ./cmd/pkims/*
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-darwin-amd64 ./cmd/kertificate/*
 
 windows: install
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-windows-amd64.exe ./cmd/pkims/*
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o ${OUTPUT_DIRECTORY}/${BINARY}-windows-amd64.exe ./cmd/kertificate/*
 
 build: linux darwin windows
 

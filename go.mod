@@ -1,4 +1,4 @@
-module pkims.io/pkims
+module kertificate.io/kertificate
 
 go 1.12
 

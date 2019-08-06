@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"pkims.io/pkims/pkg/db"
-	"pkims.io/pkims/pkg/model"
+	"kertificate.io/kertificate/pkg/db"
+	"kertificate.io/kertificate/pkg/model"
 )
 
 type authDelegate interface {
