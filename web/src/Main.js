@@ -31,11 +31,10 @@ import Typography from '@material-ui/core/Typography';
 import MenuDivider from './ui/MenuDivider';
 import MenuIconButton from './ui/MenuIconButton';
 import MenuItem from './ui/MenuItem';
-import Account from './views/Account';
-import Dashboard from './views/Dashboard';
-import Users from './views/Users';
 
-import {logout} from './actions/authentication';
+import { Account, CommonAuthorities, Dashboard, Users } from './views';
+
+import { logout } from './actions/authentication';
 
 const drawerWidth = 280;
 
@@ -129,6 +128,7 @@ const Main = ({firstName, lastName, logout}) => {
                     <Route exact path="/account" component={Account} />
                     <Route exact path="/" component={Dashboard} />
                     <Route path="/users" component={Users} />
+                    <Route path="/common-authorities" component={CommonAuthorities} />
                 </main>
             </Router>
         </div>

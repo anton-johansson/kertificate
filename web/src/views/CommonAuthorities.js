@@ -51,54 +51,39 @@ const styles = makeStyles(theme => ({
         width: 200,
       },
     },
-    column: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    name: {
-        paddingLeft: theme.spacing(2),
-    },
 }));
 
-const User = ({avatarURL, name, username, emailAddress, enabled, registrationDate}) => {
+const CommonAuthority = ({name, validFrom, validTo}) => {
     const classes = styles();
     return (
         <TableRow hover>
-            <TableCell className={classes.column}>
-                <Avatar src={avatarURL} />
-                <span className={classes.name}>{name}</span>
-            </TableCell>
-            <TableCell>{username}</TableCell>
-            <TableCell>{emailAddress}</TableCell>
-            <TableCell>Yes</TableCell>
-            <TableCell>2019-04-15</TableCell>
+            <TableCell>{name}</TableCell>
+            <TableCell>{validFrom}</TableCell>
+            <TableCell>{validTo}</TableCell>
         </TableRow>
     );
 }
 
-const Users = () => {
+const CommonAuthorities = () => {
     const classes = styles();
     return (
         <div>
             <Paper className={classes.search}>
                 <Icon className={classes.searchIcon}>search</Icon>
-                <InputBase className={classes.searchInput} placeholder="Search user..." />
+                <InputBase className={classes.searchInput} placeholder="Search authority..." />
             </Paper>
             <Paper className={classes.paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>Name</TableCell>
-                            <TableCell>Username</TableCell>
-                            <TableCell>Email address</TableCell>
-                            <TableCell>Enabled</TableCell>
-                            <TableCell>Registration date</TableCell>
+                            <TableCell>Valid from</TableCell>
+                            <TableCell>Valid to</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <User avatarURL="https://avatars1.githubusercontent.com/u/6347803" name="Anton Johansson" username="viantjoh" emailAddress="anton.johansson@viskan.se" />
-                        <User avatarURL="https://avatars1.githubusercontent.com/u/6347803" name="Anton Johansson" username="viantjoh" emailAddress="anton.johansson@viskan.se" />
+                        <CommonAuthority name="Antons CA" validFrom="2019-08-08" validTo="2020-08-08" />
+                        <CommonAuthority name="Some random CA" validFrom="2019-06-01" validTo="2019-09-01" />
                     </TableBody>
                 </Table>
                 <TablePagination
@@ -113,4 +98,4 @@ const Users = () => {
     );
 }
 
-export default Users;
+export default CommonAuthorities;
