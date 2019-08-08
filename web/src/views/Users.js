@@ -20,12 +20,13 @@ import { Avatar, Icon, InputBase, Paper, Table, TableBody, TableCell, TableHead,
 
 const styles = makeStyles(theme => ({
     paper: {
-      padding: theme.spacing(2),
-      display: 'flex',
-      overflow: 'auto',
-      flexDirection: 'column',
+        margin: theme.spacing(2),
+        display: 'flex',
+        overflow: 'auto',
+        flexDirection: 'column',
     },
     search: {
+        margin: theme.spacing(2),
         display: 'block',
         marginBottom: theme.spacing(2),
         padding: theme.spacing(1),
@@ -84,7 +85,7 @@ const Users = () => {
                 <Icon className={classes.searchIcon}>search</Icon>
                 <InputBase className={classes.searchInput} placeholder="Search user..." />
             </Paper>
-            <Paper style={{marginBottom: 10}}>
+            <Paper className={classes.paper}>
                 <Table>
                     <TableHead>
                         <TableRow>

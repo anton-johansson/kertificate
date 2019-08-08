@@ -28,8 +28,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import MenuItem from './ui/MenuItem';
 import MenuDivider from './ui/MenuDivider';
+import MenuIconButton from './ui/MenuIconButton';
+import MenuItem from './ui/MenuItem';
+import Account from './views/Account';
 import Dashboard from './views/Dashboard';
 import Users from './views/Users';
 
@@ -96,11 +98,7 @@ const Main = ({firstName, lastName, logout}) => {
                                 </Badge>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Account">
-                            <IconButton className={classes.appBarIcon}>
-                                <Icon>account_circle</Icon>
-                            </IconButton>
-                        </Tooltip>
+                        <MenuIconButton path="/account" tooltip="Account" iconName="account_circle" exact={true} />
                         <Tooltip title="Logout">
                             <IconButton className={classes.appBarIcon} onClick={logout}>
                                 <Icon>exit_to_app</Icon>
@@ -115,8 +113,9 @@ const Main = ({firstName, lastName, logout}) => {
                         <Typography>{`${firstName} ${lastName}`}</Typography>
                     </div>
                     <MenuDivider />
-                    <MenuItem title="Dashboard" path="/" exact={true} iconName="dashboard" selected={true} />
-                    <MenuItem title="Users"  path="/users" iconName="supervisor_account" />
+                    <MenuItem title="Dashboard" path="/" exact={true} iconName="dashboard" />
+                    <MenuItem title="Account" path="/account" exact={true} iconName="account_circle" />
+                    <MenuItem title="Users" path="/users" iconName="supervisor_account" />
                     <MenuItem title="Configuration" path="/configuration" iconName="settings" />
                     <MenuDivider />
                     <MenuItem title="Common authorities" path="/common-authorities" iconName="assignment_turned_in" />
@@ -127,6 +126,7 @@ const Main = ({firstName, lastName, logout}) => {
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
+                    <Route exact path="/account" component={Account} />
                     <Route exact path="/" component={Dashboard} />
                     <Route path="/users" component={Users} />
                 </main>

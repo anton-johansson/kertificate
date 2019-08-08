@@ -15,29 +15,32 @@
  */
 
 import React from 'react';
+import { Route, Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, Typography } from '@material-ui/core';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = makeStyles(theme => ({
-    paper: {
-        margin: theme.spacing(2),
-        padding: theme.spacing(2),
-        display: 'flex',
-        overflow: 'auto',
-        flexDirection: 'column',
+    appBarIcon: {
+        color: theme.palette.common.white,
+    },
+    appBarIconSelected: {
+        color: theme.palette.secondary.light,
     },
 }));
 
-export default function Dashboard() {
+const MenuItem = ({iconName, tooltip, exact, path}) => {
     const classes = styles();
     return (
-        <div>
-            <Paper className={classes.paper}>
-                <Typography>Dashboard</Typography>
-            </Paper>
-            <Paper className={classes.paper}>
-                <Typography>Second card</Typography>
-            </Paper>
-        </div>
+        <Route exact={exact} path={path} children={({history, match}) => (
+            <Tooltip title={tooltip}>
+                <IconButton className={match ? classes.appBarIconSelected : classes.appBarIcon} onClick={() => history.push(path)}>
+                    <Icon>{iconName}</Icon>
+                </IconButton>
+            </Tooltip>
+        )} />
     );
 }
+
+export default MenuItem;
