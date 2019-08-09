@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := dev
 
 BINARY = kertificate
 MODULE = ${BINARY}.io/${BINARY}
@@ -10,6 +10,7 @@ COMMIT = $(shell git rev-parse HEAD)
 BUILD_DATE = $(shell date --utc +'%Y-%m-%dT%H:%M:%SZ')
 PACKAGE_LIST = $$(go list ./...)
 OUTPUT_DIRECTORY = ./bin
+WEB_DIRECTORY = ./web
 LDFLAGS = -ldflags "\
 	-X ${MODULE}/pkg/version.version=${VERSION} \
 	-X ${MODULE}/pkg/version.goVersion=${GO_VERSION} \
@@ -19,6 +20,7 @@ LDFLAGS = -ldflags "\
 
 install:
 	go get -v -d ./...
+	npm install --prefix ${WEB_DIRECTORY}
 
 fmt:
 	gofmt -s -d -e -w .
@@ -44,5 +46,18 @@ docker:
 	docker build -t ${DOCKER_REGISTRY}/${BINARY}:${VERSION} .
 	docker tag ${DOCKER_REGISTRY}/${BINARY}:${VERSION} ${DOCKER_REGISTRY}/${BINARY}:latest
 
+dev-go:
+	go get github.com/cespare/reflex
+	reflex -sr '\.go$$' -- go run cmd/kertificate/* start
+
+dev-node:
+	npm start --prefix ${WEB_DIRECTORY}
+
+dev: dev-go dev-node
+
 clean:
 	rm -rf ${OUTPUT_DIRECTORY}
+	rm -rf ${WEB_DIRECTORY}/dist
+	rm -rf ${WEB_DIRECTORY}/node_modules
+
+# TODO: this removes ./web/dist/index.html :C
