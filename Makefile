@@ -59,5 +59,3 @@ clean:
 	rm -rf ${OUTPUT_DIRECTORY}
 	rm -rf ${WEB_DIRECTORY}/dist
 	rm -rf ${WEB_DIRECTORY}/node_modules
-
-# TODO: this removes ./web/dist/index.html :C
