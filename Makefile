@@ -62,7 +62,7 @@ docker:
 
 dev-go: install-go
 	go get github.com/cespare/reflex
-	reflex -sr '\.go$$' -- go run -tags dev cmd/kertificate/* start
+	reflex -sr '\.go$$' -R '^web/.*' -- go run -tags dev cmd/kertificate/* start
 
 dev-web: install-web
 	npm start --prefix ${WEB_DIRECTORY}
