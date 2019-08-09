@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:12.8.0-slim as build-web
-RUN apt update && apt install make
+FROM node:12.8.0-alpine as build-web
+RUN apk add make
 WORKDIR /src/app
 COPY . /src/app
 RUN make build-web
