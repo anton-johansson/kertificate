@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --config ./webpack.config.js --env.API_BASE=http://localhost:8080 --mode development",
+    "build": "webpack --config ./webpack.config.js --mode production",
     "test": "echo \"No test specified\" && exit 0"
   },
   "devDependencies": {
@@ -12,6 +13,7 @@
     "@babel/preset-env": "7.4.5",
     "@babel/preset-react": "7.0.0",
     "babel-loader": "8.0.6",
+    "copy-webpack-plugin": "5.0.4",
     "react-hot-loader": "4.11.1",
     "webpack": "4.34.0",
     "webpack-cli": "3.3.4",

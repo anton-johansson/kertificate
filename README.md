@@ -5,17 +5,31 @@ Kertificate is a PKI management system that allows you to administrate your comm
 
 ## Development
 
-Start API server (runs on port `8080`):
+Run the API server - with files watched - on port `8080` and the web application with hot reload on port `8000`. This requires `go` version 1.12 or higher, `node` and `npm` installed.
 
 ```shell
-$ make linux && ./bin/kertificate-linux-amd64 start
+$ make install
+$ make -j 2
 ```
 
-Start web UI with hot-reload (runs on port `8000`):
 
-```shell
-$ cd web/
-$ npm start
+## Installing
+
+To create a production-ready build:
+
+```
+$ make linux
+```
+
+TODO: this does not build nor embedd web code
+
+
+### Docker
+
+To create a production-ready Docker image (which only requires `make` and `docker` installed):
+
+```
+$ make docker
 ```
 
 

@@ -15,6 +15,14 @@
  */
 
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+const getApiBase = env => {
+    if (env && env.API_BASE) {
+        return env.API_BASE;
+    }
+    return '';
+};
 
 module.exports = env => ({
     entry: './src/index.js',
@@ -37,10 +45,13 @@ module.exports = env => ({
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.DefinePlugin({'process.env.API_BASE': JSON.stringify(env.API_BASE)}),
+        new webpack.DefinePlugin({'process.env.API_BASE': JSON.stringify(getApiBase(env))}),
+        new CopyWebpackPlugin([{
+            from: './public',
+        }]),
     ],
     devServer: {
-        contentBase: './dist',
+        contentBase: './public',
         hot: true,
         port: 8000
     }
