@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"kertificate.io/kertificate/pkg/api/static"
 	v1 "kertificate.io/kertificate/pkg/api/v1"
 	"kertificate.io/kertificate/pkg/auth"
 
@@ -50,6 +51,7 @@ func (server *ApiServer) Start() error {
 	}))
 
 	server.v1.Register(v1Group)
+	server.api.GET("/*", static.Handler)
 	return server.api.Start(":8080")
 }
 
