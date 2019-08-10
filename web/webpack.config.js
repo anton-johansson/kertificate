@@ -53,6 +53,9 @@ module.exports = env => ({
     devServer: {
         contentBase: './public',
         hot: true,
-        port: 8000
+        port: 8000,
+        historyApiFallback: {
+            index: "/index.html",
+        },
     }
 });
