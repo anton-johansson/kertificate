@@ -45,7 +45,7 @@ const MenuItem = ({iconName, exact, path, title}) => {
             <Route exact={exact} path={path} children={({match}) => {
                 const buttonClassName = (match ? [classes.selected, classes.button] : [classes.button]).join(" ");
                 return (
-                    <Link to={path} className={classes.link}>
+                    <Link to={path} tabIndex={-1} className={classes.link}>
                         <Button fullWidth={true} className={buttonClassName}>
                             <Icon className={classes.icon}>{iconName}</Icon>
                             {title}
