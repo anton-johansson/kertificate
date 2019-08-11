@@ -97,8 +97,8 @@ const Users = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <User avatarURL="https://avatars1.githubusercontent.com/u/6347803" name="Anton Johansson" username="viantjoh" emailAddress="anton.johansson@viskan.se" />
-                        <User avatarURL="https://avatars1.githubusercontent.com/u/6347803" name="Anton Johansson" username="viantjoh" emailAddress="anton.johansson@viskan.se" />
+                        <User avatarURL="https://avatars1.githubusercontent.com/u/6347803" name="Anton Johansson" username="anton3" emailAddress="antoon.johansson@gmail.com" />
+                        <User avatarURL="https://avatars1.githubusercontent.com/u/6347803" name="Anton Johansson" username="anton3" emailAddress="antoon.johansson@gmail.com" />
                     </TableBody>
                 </Table>
                 <TablePagination
