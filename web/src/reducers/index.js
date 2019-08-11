@@ -14,11 +14,5 @@
  * limitations under the License.
  */
 
-const initial = {};
-
-export default function dummyReducer(state = initial, action) {
-    switch (action.type) {
-        default:
-            return state;
-    }
-}
+export { default as commonAuthorityReducer } from './common-authority';
+export { default as authenticationReducer } from './authentication';

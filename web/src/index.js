@@ -22,13 +22,12 @@ import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 
 import App from './App';
-import authenticationReducer from './reducers/authentication';
-import dummyReducer from './reducers/dummy';
+import { authenticationReducer, commonAuthorityReducer } from './reducers';
 import { checkRememberedToken } from './actions/authentication';
 
 const reducer = combineReducers({
     authentication: authenticationReducer,
-    dummy: dummyReducer
+    commonAuthority: commonAuthorityReducer,
 });
 
 const store = createStore(reducer, applyMiddleware(thunk, logger));

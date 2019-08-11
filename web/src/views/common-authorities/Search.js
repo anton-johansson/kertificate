@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Fab, Icon, InputBase, Paper, Table, TableBody, TableCell, TableHead, TablePagination, TableRow, Tooltip } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
+
+import { loadCommonAuthorities, setSearchString } from '../../actions/common-authority';
 
 const styles = makeStyles(theme => ({
     addNew: {
@@ -63,24 +66,41 @@ const styles = makeStyles(theme => ({
     },
 }));
 
-const CommonAuthority = ({name, validFrom, validTo, onClick}) => {
+const CommonAuthority = ({name, notBefore, notAfter, onClick}) => {
     return (
         <TableRow hover onClick={onClick}>
             <TableCell>{name}</TableCell>
-            <TableCell>{validFrom}</TableCell>
-            <TableCell>{validTo}</TableCell>
+            <TableCell>{notBefore}</TableCell>
+            <TableCell>{notAfter}</TableCell>
         </TableRow>
     );
 }
 
-const Search = ({onSelectCA, onNewCA}) => {
+const Search = ({commonAuthorities, searchString, onSelectCA, onNewCA, loadCommonAuthorities, setSearchString}) => {
+    loadCommonAuthorities();
+
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [page, setPage] = useState(0);
+
+    const onChangePage = (_, newPage) => setPage(newPage);
+    const onChangeRowsPerPage = event => {
+        setPage(0);
+        setRowsPerPage(event.target.value);
+    };
+    const onChangeSearchString = event => {
+        setPage(0);
+        setSearchString(event.target.value);
+    }
+
+    const filteredList = !!searchString ? commonAuthorities.filter(commonAuthority => commonAuthority.name.toLowerCase().includes(searchString.toLowerCase())) : commonAuthorities;
+
     const classes = styles();
     return (
         <div>
             <div className={classes.topBar}>
                 <Paper className={classes.search}>
                     <Icon className={classes.searchIcon}>search</Icon>
-                    <InputBase className={classes.searchInput} placeholder="Search authority..." />
+                    <InputBase className={classes.searchInput} placeholder="Search authority..." onChange={onChangeSearchString} />
                 </Paper>
                 <Tooltip title="Create new common authority" placement="left">
                     <Fab className={classes.addNew} color="primary" onClick={onNewCA}>
@@ -98,20 +118,37 @@ const Search = ({onSelectCA, onNewCA}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <CommonAuthority name="Antons CA" validFrom="2019-08-08" validTo="2020-08-08" onClick={() => onSelectCA(1)} />
-                        <CommonAuthority name="Some random CA" validFrom="2019-06-01" validTo="2019-09-01" onClick={() => onSelectCA(2)} />
+                        {
+                            filteredList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(commonAuthority => (
+                                <CommonAuthority
+                                    key={`common-authority-${commonAuthority.commonAuthorityId}`}
+                                    name={commonAuthority.name}
+                                    notBefore={commonAuthority.notBefore}
+                                    notAfter={commonAuthority.notAfter}
+                                    onClick={() => onSelectCA(commonAuthority.commonAuthorityId)}
+                                    />
+                            ))
+                        }
                     </TableBody>
                 </Table>
                 <TablePagination
                     component="div"
-                    rowsPerPageOptions={[10, 25, 50]}
-                    rowsPerPage={25}
-                    onChangePage={() => console.log('changed page')}
-                    count={32}
-                    page={0} />
+                    count={filteredList.length}
+                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPage={rowsPerPage}
+                    onChangeRowsPerPage={onChangeRowsPerPage}
+                    page={page}
+                    onChangePage={onChangePage}
+                    />
             </Paper>
         </div>
     );
 }
 
-export default Search;
+const mapStateToProps = state => ({
+    searchString: state.commonAuthority.searchString,
+    commonAuthorities: state.commonAuthority.commonAuthorities,
+});
+const mapDispatchToProps = {loadCommonAuthorities, setSearchString};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
