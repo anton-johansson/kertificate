@@ -20,6 +20,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Fab, Icon, InputBase, Paper, Table, TableBody, TableCell, TableHead, TablePagination, TableRow, Tooltip } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 
+import DateTime from '../../ui/DateTime';
 import { loadCommonAuthorities, setSearchString } from '../../actions/common-authority';
 
 const styles = makeStyles(theme => ({
@@ -69,9 +70,14 @@ const styles = makeStyles(theme => ({
 const CommonAuthority = ({name, notBefore, notAfter, onClick}) => {
     return (
         <TableRow hover onClick={onClick}>
-            <TableCell>{name}</TableCell>
-            <TableCell>{notBefore}</TableCell>
-            <TableCell>{notAfter}</TableCell>
+            <TableCell>
+                {name}
+            </TableCell>
+            <TableCell>
+                <DateTime value={notBefore} /></TableCell>
+            <TableCell>
+                <DateTime value={notAfter} />
+            </TableCell>
         </TableRow>
     );
 }
