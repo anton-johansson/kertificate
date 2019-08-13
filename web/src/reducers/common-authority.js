@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-import { LOAD_COMMON_AUTHORITIES, LOAD_COMMON_AUTHORITIES_SUCCESS, LOAD_COMMON_AUTHORITIES_FAILED, SET_SEARCH_STRING } from '../actions/common-authority';
+import { LOAD_COMMON_AUTHORITIES, LOAD_COMMON_AUTHORITIES_SUCCESS, LOAD_COMMON_AUTHORITIES_FAILED, SET_SEARCH_STRING, LOAD_COMMON_AUTHORITY_SUCCESS } from '../actions/common-authority';
 
 const INITIAL_STATE = {
     loadState: 'not-loaded',
     searchString: '',
     commonAuthorities: [],
+    commonAuthority: {
+        commonAuthorityId: -1,
+        certificateData: undefined,
+    },
 };
 
 export default function commonAuthoritySearchReducer(state = INITIAL_STATE, action) {
@@ -45,6 +49,17 @@ export default function commonAuthoritySearchReducer(state = INITIAL_STATE, acti
             return {
                 ...state,
                 searchString: action.payload.searchString,
+            };
+        case LOAD_COMMON_AUTHORITY_SUCCESS:
+            return {
+                ...state,
+                commonAuthority: {
+                    commonAuthorityId: action.payload.commonAuthorityId,
+                    name: action.payload.name,
+                    comments: action.payload.comments,
+                    certificateData: action.payload.certificateData,
+                    pem: action.payload.pem,
+                },
             };
         default:
             return state;

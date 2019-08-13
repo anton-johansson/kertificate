@@ -41,7 +41,7 @@ const drawerWidth = 280;
 const styles = makeStyles(theme => ({
     '@global': {
         body: {
-            backgroundColor: '#f4f6f8',
+            backgroundColor: '#f5f5f5',
         },
     },
     appBar: {
