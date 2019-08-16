@@ -1,5 +1,6 @@
-![Kert](./resources/kert.svg)
-
+<p align="center">
+    <img src="https://raw.githubusercontent.com/anton-johansson/kertificate/add-logo/resources/kert.svg?sanitize=true" height="200" />
+</p>
 <h1 align="center">Kertificate</h1>
 <p align="center">
     <i>Kert loves public key infrastructure!</i>
