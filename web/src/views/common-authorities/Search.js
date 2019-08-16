@@ -37,29 +37,26 @@ const styles = makeStyles(theme => ({
     },
     search: {
         margin: theme.spacing(2),
-        display: 'block',
+        //display: 'block',
         marginBottom: theme.spacing(2),
         padding: theme.spacing(1),
         display: 'flex',
-        flexDirection: 'auto',
+        //flexDirection: 'row',
         width: 400,
-        verticalAlign: 'center',
+        //verticalAlign: 'center',
     },
     searchIcon: {
-      //height: '100%',
-      position: 'absolute',
-      pointerEvents: 'none',
-      //display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+        //height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        //display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     searchInput: {
-      padding: theme.spacing(0, 0, 0, 4),
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: 200,
-      },
+        padding: theme.spacing(0, 0, 0, 4),
+        transition: theme.transitions.create('width'),
+        width: '100%',
     },
     topBar: {
         display: 'flex',
@@ -106,7 +103,7 @@ const Search = ({commonAuthorities, searchString, onSelectCA, onNewCA, loadCommo
             <div className={classes.topBar}>
                 <Paper className={classes.search}>
                     <Icon className={classes.searchIcon}>search</Icon>
-                    <InputBase className={classes.searchInput} placeholder="Search authority..." onChange={onChangeSearchString} />
+                    <InputBase className={classes.searchInput} placeholder="Search common authority..." onChange={onChangeSearchString} />
                 </Paper>
                 <Tooltip title="Create new common authority" placement="left">
                     <Fab className={classes.addNew} color="primary" onClick={onNewCA}>
