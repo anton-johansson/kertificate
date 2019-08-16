@@ -1,6 +1,23 @@
-# Kertificate
+![Kert](./resources/kert.svg)
 
-Kertificate is a PKI management system that allows you to administrate your common authorities and server and client certificates.
+<h1 align="center">Kertificate</h1>
+<p align="center">
+    <i>Kert loves public key infrastructure!</i>
+</p>
+<p align="center">
+    Kertificate is a PKI management system that allows you to administrate your common authorities and server and client certificates and perform actions upon renewal of these certificates.
+</p>
+<p align="center">
+    <a aria-label="build status" href="https://circleci.com/gh/anton-johansson/workflows/kertificate">
+        <img src="https://img.shields.io/circleci/build/gh/anton-johansson/mattermost-housekeeper?style=for-the-badge">
+    </a>
+    <a aria-label="contributors graph" href="https://github.com/anton-johansson/kertificate/graphs/contributors">
+        <img src="https://img.shields.io/github/contributors/anton-johansson/kertificate.svg?style=for-the-badge">
+    </a>
+    <a aria-label="license" href="https://github.com/anton-johansson/kertificate/blob/add-logo/LICENSE">
+        <img src="https://img.shields.io/github/license/anton-johansson/kertificate.svg?style=for-the-badge">
+    </a>
+</p>
 
 
 ## Development
