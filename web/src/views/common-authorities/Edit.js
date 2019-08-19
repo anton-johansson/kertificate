@@ -16,18 +16,17 @@
 
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Box, Button, ButtonGroup, Container, Icon, Paper, Tab, Tabs, TextField, Typography } from '@material-ui/core';
+import { Box, Button, ButtonGroup, Fab, Icon, Paper, Tab, Tabs, TextField, Typography } from '@material-ui/core';
 import { ArrowDropDown } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { loadCommonAuthority } from '../../actions/common-authority';
 import { getFingerprintSHA1, getFingerprintSHA256 } from '../../pki';
-import DateTime from '../../ui/DateTime';
+import { DateTime, SplitButton } from '../../ui';
 
 const styles = makeStyles(theme => ({
     area: {
         margin: theme.spacing(2),
-        backgroundColor: 'white',
     },
     details: {
         display: 'flex',
@@ -79,7 +78,20 @@ const styles = makeStyles(theme => ({
         fontFamily: 'Ubuntu Mono',
         fontSize: 16,
     },
+    toolbar: {
+        paddingBottom: theme.spacing(2),
+        display: 'flex',
+    },
+    close: {
+        marginLeft: 'auto',
+    },
+    toolbarButton: {
+        marginRight: theme.spacing(1),
+    },
 }));
+
+const viewOptions = ['View certificate as PEM', 'View private key as PEM'];
+const exportOptions = ['Export certificate as PEM', 'Export private key as PEM', 'Export as PKCS12'];
 
 const TabPanel = ({children, value, selectedTab}) => {
     const classes = styles();
@@ -92,7 +104,17 @@ const Edit = ({commonAuthority, match: {params: {commonAuthorityId}}, loadCommon
     const [selectedTab, setSelectedTab] = useState("details");
     const classes = styles();
     return (
-        <div className={classes.root} className={classes.area}>
+        <div className={classes.area}>
+            <div className={classes.toolbar}>
+                <Button className={classes.toolbarButton} variant="contained" color="primary">
+                    <Icon>view_list</Icon>&nbsp;&nbsp;Save
+                </Button>
+                <SplitButton className={classes.toolbarButton} iconName="folder_open" options={viewOptions} width="300"/>
+                <SplitButton className={classes.toolbarButton} iconName="import_export" options={exportOptions} />
+                <Fab color="primary" className={classes.close}>
+                    <Icon>keyboard_return</Icon>
+                </Fab>
+            </div>
             <Paper className={classes.paper}>
                 <Paper square className={classes.tabs} elevation={1}>
                     <Tabs value={selectedTab} onChange={(_, tab) => setSelectedTab(tab)} indicatorColor="primary" textColor="primary" variant="standard">
@@ -154,12 +176,6 @@ const Edit = ({commonAuthority, match: {params: {commonAuthorityId}}, loadCommon
                             {commonAuthority.pem && commonAuthority.pem.split('\n').map((data, key) => <div key={key}>{data}</div>)}
                         </Typography>
                     </Box>
-                    <ButtonGroup variant="contained" color="primary">
-                        <Button>Export certificate as .PEM</Button>
-                        <Button color="primary" size="small">
-                            <ArrowDropDown />
-                        </Button>
-                    </ButtonGroup>
                 </TabPanel>
                 <TabPanel value="renewal" selectedTab={selectedTab}>
                     <Typography>Not implemented.</Typography>

@@ -71,7 +71,8 @@ const CommonAuthority = ({name, notBefore, notAfter, onClick}) => {
                 {name}
             </TableCell>
             <TableCell>
-                <DateTime value={notBefore} /></TableCell>
+                <DateTime value={notBefore} />
+            </TableCell>
             <TableCell>
                 <DateTime value={notAfter} />
             </TableCell>
